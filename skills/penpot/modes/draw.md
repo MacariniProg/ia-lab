@@ -1,0 +1,12 @@
+# Mode: draw
+
+Builds the screens `/design` asks for: an approved inventory (screens, the states of each, the text) comes in; a Penpot file with one page per flow, checked, comes out. Read `references/pitfalls.md` before writing the first script.
+
+0. **Inputs.** The inventory from the caller (`docs/features/<slug>/screens.md`), `docs/design/README.md` (file convention, library, frame sizes), `docs/design/components.md` (what exists).
+1. **File.** Find the feature's file (`files.mjs list <projectId>`). Missing → ask, then `files.mjs new <projectId> "<name>" --library <id> --page "<legend page name>"` (linked to the library, tokens copied). Ask the user to open it and connect the MCP server; confirm with `mcp.mjs -e "return penpot.currentFile.name"` twice (two connected tabs answer in turns). If the file shows "updates in shared libraries", accept them first.
+2. **Pages.** One per flow, `NN <flow>`, in navigation order, plus the legend page; `validate` drafts go on their own pages, named as the caller says (e.g. `Validação v1 · 01 <flow>`). The plugin cannot reorder pages: create them in order. `references/flow-pages.md` says what a flow is.
+3. **Build, one flow per script.** Write each script to the scratch folder and run it with `node <skill>/scripts/mcp.mjs <script.js>`. Frames sit at the page root, named `<Screen> — <state>`. Build the base frame once; each state is `frame.clone()` plus its changes (about 1 s each, where rebuilding takes minutes). Content: exactly the text the inventory gives; sample data from `docs/design/README.md` when it has some. A piece the library lacks → compose it from existing instances and boards, name it `missing/<piece>`, and list it for the report.
+4. **Look.** Export every frame (`mcp.mjs --export <frameId> <scratch>/<name>.png`) and read the image. Fix cut, overflow, misalignment, wrong state. An export can show the previous version right after an edit: wait a few seconds and export again before assuming a failure.
+5. **Organize.** On the legend page `S.legend(title, desc, kinds)`; on each flow page `S.flow(n, title, desc, [[frame, kind, note], ...])`, the note being what the caller gives per frame (e.g. its rules). Then `S.fitTexts(penpot.root)` and `await S.restack()`, always last.
+6. **Close out**, per page: `S.fitTexts(root)`, `await S.relink(root)`, then `S.audit(root)` must return `[]`. A shape that stays loose: bind it by hand, or ask when no token fits.
+7. **Hand back** to the caller: the file URL, and per frame its page, name, and id, for `screens.md`; the `missing/` pieces.

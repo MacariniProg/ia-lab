@@ -1,0 +1,11 @@
+# Mode: validate (draft for the screen validation meeting)
+
+A draft product reacts to: does this flow match what we agreed? It shows the happy path with the real design system, so the meeting discusses the product, not the wireframe. It is fast and incomplete on purpose: no loading, error, or empty states.
+
+1. **Screens from the journey.** Walk the business rules' journey (section 4). Each step where the user sees or does something becomes a screen or a dialog; steps the system does alone have none. Group them into flows (a screen or dialog with what happens on it; `references/flow-pages.md` of the tool skill). Screens that already exist and do not change, and screens whose rules belong to another feature (business rules section 8), appear only as context, once, under "Context from other features" with the owning feature; their inventory belongs to that feature.
+2. **One frame per screen, default state.** Add a second frame only when a rule changes what the screen shows in a way product must see (e.g. a choice per plot vs for the whole farm, RN-n), or for an open point (below).
+3. **Rules on every frame.** Each row cites the rules it makes visible (`RN-n`). The drawing carries the same note next to the frame name, so the meeting can point at a rule.
+4. **Open points are drawn, not hidden.** A screen touched by an open point shows the provisional rule and carries `P-n` in its note. When two answers would look clearly different, draw both (`<Screen> — P-n alternativa`) and let the meeting choose.
+5. **Text from the rules.** Labels, titles, and statuses use the vocabulary (section 3) and the rules' own words; no code exists yet. Sample data comes from `docs/design/README.md`, realistic and the same across screens. Nothing invented beyond what the rules imply: a label the rules do not settle is written as the draft proposes and listed for the meeting.
+6. **Points for the meeting.** Every choice the draft made that the rules did not settle (a label, an order, what is shown first, a missing step) goes to the "For the validation meeting" section of `screens.md`, one line each, with the screen. Together with the open points, this is the meeting's agenda.
+7. **Pages.** Draft pages are prefixed with the validation round (`Validação v<n> · 01 <flow>`), so a later round or the final design never overwrites them.

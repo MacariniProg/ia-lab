@@ -1,0 +1,5 @@
+# OpenAI Codex adapter: interface metadata only. Instructions live in ../SKILL.md.
+interface:
+  display_name: "Transcribe"
+  short_description: "Meeting recording to transcript and minutes"
+  default_prompt: "Run the transcribe skill: read its SKILL.md, then turn this recording into a clean transcript and minutes."

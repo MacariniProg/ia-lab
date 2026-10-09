@@ -1,0 +1,5 @@
+# OpenAI Codex adapter: interface metadata only. Instructions live in ../SKILL.md.
+interface:
+  display_name: "Design"
+  short_description: "Business rules to screens, validated with product"
+  default_prompt: "Run the design skill: read its SKILL.md, then turn this feature's business rules into screens."

@@ -1,0 +1,7 @@
+# Scope Plan Route: monorepo
+
+Monorepo (workspaces config: `pnpm-workspace.yaml`, `turbo.json`, `nx.json`, `lerna.json`, `workspaces` in root `package.json`; or multiple manifests under `apps/*` / `packages/*`) or repo of repos (child folders with their own `.git` or manifest, e.g. a `web/` and an `api/` folder, each its own git repo): one scope for the product, never one per workspace:
+- One `docs/scope.md` (or `docs/scope/index.md` + epics if large) at the root that holds the AI layer. A feature is a product capability, so it usually spans workspaces (one feature touches both `web` and `api`).
+- Each feature section names the workspaces it touches in its intent line (`Workspaces: web, api`), and its code pointer lists one path per workspace. Read each touched workspace's nested `AGENTS.md` for its stack and conventions; apps differ, don't assume one.
+- `/scope web <idea>` plans with the `web` workspace as the focus; bare `/scope` plans the whole product. Foundations are per workspace (a workspace's stack, its tooling) or shared (monorepo tooling, a shared UI package); tag each foundation with its workspace. A greenfield workspace (no code yet) follows the foundations first sequencing in `modes/plan-greenfield.md`, applied per workspace; an already built workspace enrolls per `modes/plan-brownfield.md`.
+- Never split one capability into per workspace features just to fit a folder; split only when the parts ship separately.

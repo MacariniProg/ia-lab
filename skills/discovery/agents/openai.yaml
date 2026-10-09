@@ -1,0 +1,5 @@
+# OpenAI Codex adapter: interface metadata only. Instructions live in ../SKILL.md.
+interface:
+  display_name: "Discovery"
+  short_description: "Meeting or idea to settled business rules"
+  default_prompt: "Run the discovery skill: read its SKILL.md, then turn this meeting or idea into business rules, asking product what the team cannot answer alone."

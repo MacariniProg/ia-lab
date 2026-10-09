@@ -1,0 +1,5 @@
+# OpenAI Codex adapter: interface metadata only. Instructions live in ../SKILL.md.
+interface:
+  display_name: "Penpot"
+  short_description: "Drive Penpot: setup a project's design system, draw screens"
+  default_prompt: "Run the penpot skill: read its SKILL.md, then do this in Penpot."

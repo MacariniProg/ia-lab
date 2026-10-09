@@ -1,0 +1,347 @@
+<!--
+Template: rounds/<n>/questionnaire.html (Artifact page for rounds/<n>/questionnaire.md)
+
+To fill it:
+- set the title tag to the questionnaire's name (2 to 4 words, in the respondents' language);
+- replace the JSON inside <script id="data"> with this questionnaire: same ids, order, and text as the Markdown;
+- translate every "ui" string into the respondents' language;
+- change nothing else, then delete this comment.
+
+Data fields: "key" unique per questionnaire (e.g. "<slug>-<n>"); "sections" [{id, title}]; "questions" [{id, section,
+q, why?, note? (e.g. "Only if question 2 includes X"), type "one" | "many" | "text", opts? [labels], suggest? {opt, why},
+source (H-n, P-n, or understanding question number; never shown)}].
+
+Answers are saved to the Artifact database at answers/<viewer id>:
+{respondent, answers: {<question id>: {choice: [labels], text, comment, unsure}}, at}.
+-->
+<title>Questionnaire name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column of question cards, numbered by their real ids; a sticky bar at the bottom shows progress and save state. */
+:root {
+  --bg: #f4f6f5; --surface: #ffffff; --fg: #1b2420; --muted: #5a6862; --line: #d8dfdb;
+  --accent: #1d5b70; --accent-soft: #e2edf0; --ok: #2c7a4d; --warn: #9a5418;
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121816; --surface: #1a221f; --fg: #e4ebe7; --muted: #9aa9a2; --line: #2c3833;
+    --accent: #7cc0d6; --accent-soft: #1d3138; --ok: #6fc993; --warn: #e2a066; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121816; --surface: #1a221f; --fg: #e4ebe7; --muted: #9aa9a2; --line: #2c3833;
+  --accent: #7cc0d6; --accent-soft: #1d3138; --ok: #6fc993; --warn: #e2a066; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 16px/1.55 var(--body); padding: 0 16px; }
+main { max-width: 44rem; margin: 0 auto; padding-block: 40px 0; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 2rem; line-height: 1.15; }
+h2 { font-size: 1.35rem; padding-top: 8px; border-top: 1px solid var(--line); }
+h3 { font-size: 1.15rem; line-height: 1.3; font-weight: 500; }
+p { margin: 0; }
+.meta { display: grid; gap: 6px; color: var(--muted); font-size: .95rem; }
+.meta b { color: var(--fg); font-weight: 600; }
+.block { display: grid; gap: 12px; }
+.proposal { background: var(--accent-soft); border-radius: 8px; padding: 16px 20px; display: grid; gap: 8px; }
+.proposal ol { margin: 0; padding-left: 1.25rem; display: grid; gap: 4px; }
+.label { font: 500 .75rem/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.field { display: grid; gap: 6px; }
+.field label, .q .small { font-size: .9rem; color: var(--muted); }
+input[type="text"], textarea { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; width: 100%; box-sizing: border-box; }
+textarea { min-height: 4.5rem; resize: vertical; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: grid; gap: 12px; min-width: 0; }
+.q.done { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+.q-head { display: flex; gap: 12px; align-items: baseline; }
+.qid { font: 500 .85rem/1 var(--mono); color: var(--accent); flex: none; min-width: 2.2rem; }
+.why, .note { color: var(--muted); font-size: .95rem; }
+.note { font-style: italic; }
+.opts { display: grid; gap: 6px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.opt:hover { background: var(--accent-soft); }
+.opt input { margin-top: .3rem; accent-color: var(--accent); }
+.opt .tag { font: 500 .7rem/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
+.sug { font-size: .9rem; color: var(--muted); }
+.unsure { display: flex; gap: 8px; align-items: center; font-size: .9rem; color: var(--muted); cursor: pointer; }
+.bar { position: sticky; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.status { font-size: .9rem; color: var(--muted); min-width: 0; flex: 1 1 16rem; }
+.status.err { color: var(--warn); }
+.progress { font: 500 .85rem/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--fg); }
+.actions { display: flex; gap: 8px; }
+button { font: 500 .9rem/1 var(--body); color: var(--accent); background: transparent; border: 1px solid var(--accent); border-radius: 6px; padding: 10px 14px; cursor: pointer; }
+button:hover { background: var(--accent-soft); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#export { min-height: 12rem; font: .85rem/1.5 var(--mono); }
+@media (prefers-reduced-motion: no-preference) { .q { transition: border-color .2s; } }
+</style>
+
+<main>
+  <header class="block">
+    <span class="label" id="eyebrow"></span>
+    <h1 id="title"></h1>
+    <p id="purpose"></p>
+    <div class="meta" id="meta"></div>
+  </header>
+  <section class="block" id="context"></section>
+  <section class="block">
+    <div class="field">
+      <label for="respondent" id="respondent-label"></label>
+      <input type="text" id="respondent" autocomplete="name">
+    </div>
+    <p class="why" id="howto"></p>
+  </section>
+  <div id="questions" class="block"></div>
+  <textarea id="export" readonly hidden aria-label="Answers as text"></textarea>
+  <div class="bar">
+    <span class="progress" id="progress"></span>
+    <span class="status" id="status" role="status"></span>
+    <div class="actions">
+      <button type="button" id="copy"></button>
+      <button type="button" id="download" hidden></button>
+    </div>
+  </div>
+</main>
+
+<script type="application/json" id="data">
+{
+  "key": "example-1",
+  "title": "Invited auditor: product questions",
+  "purpose": "Settle what an invited auditor can see and do, so screens and tasks can start.",
+  "from": "Dev team",
+  "to": "Product owner",
+  "use": "Answers become the feature's business rules. Without an answer, the team follows its suggestion.",
+  "deadline": "Tuesday, 10/06. About 15 minutes.",
+  "context": ["One paragraph of context: what was agreed so far and what changes the conversation."],
+  "proposal": ["The project owner invites the auditor by email.", "The auditor sees only that project, read only."],
+  "sections": [{ "id": "A", "title": "A. Who the auditor is" }, { "id": "Z", "title": "Z. Anything else" }],
+  "questions": [
+    { "id": "1", "section": "A", "q": "Who invites the auditor?", "type": "one", "opts": ["Project admin", "Platform team only"], "suggest": { "opt": "Platform team only", "why": "the client does not pick its own auditor." }, "source": "H-1" },
+    { "id": "2", "section": "A", "q": "What can the auditor do?", "why": "The first version could be read only.", "type": "many", "opts": ["Read and download", "Leave findings", "Mark as verified"], "source": "understanding 2" },
+    { "id": "3", "section": "Z", "q": "Anything else?", "type": "text", "source": "-" }
+  ],
+  "ui": {
+    "eyebrow": "Questionnaire",
+    "from": "From", "to": "To", "use": "How the answers will be used", "deadline": "How to answer",
+    "proposal": "Proposal (to validate)",
+    "respondent": "Your name",
+    "howto": "Answers save on their own as you go. You can stop and come back through the same link. \"I don't know\" is a useful answer.",
+    "many": "Pick all that apply.",
+    "suggested": "suggested",
+    "suggestion": "Suggestion",
+    "unsure": "I don't know",
+    "comment": "Comment (optional)",
+    "answer": "Your answer",
+    "progress": "{n} of {m} answered",
+    "connecting": "Connecting…",
+    "online": "Saved here. The team reads your answers from this page.",
+    "saving": "Saving…",
+    "local": "Saved in this browser only. When you finish, use Copy answers and send the text to the team.",
+    "failed": "Could not save here. Your answers stay in this browser; use Copy answers and send the text to the team.",
+    "copy": "Copy answers", "copied": "Copied", "copyFailed": "Select the text below and copy it.",
+    "download": "Download answers",
+    "noAnswer": "(no answer)"
+  }
+}
+</script>
+<script>
+const D = JSON.parse(document.getElementById("data").textContent);
+const U = D.ui;
+const $ = (id) => document.getElementById(id);
+const LS = "questionnaire:" + D.key;
+let state = { respondent: "", answers: {}, at: 0 };
+let ref = null, timer = null, writing = false, again = false;
+
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "text") e.textContent = v; else if (k in e) e[k] = v; else e.setAttribute(k, v);
+  }
+  for (const kid of kids) if (kid) e.append(kid);
+  return e;
+}
+function readLocal() { try { return JSON.parse(localStorage.getItem(LS) || "null"); } catch (e) { return null; } }
+function saveLocal() { try { localStorage.setItem(LS, JSON.stringify(state)); } catch (e) {} }
+function answered(a) { return !!a && (a.unsure || (a.choice && a.choice.length > 0) || !!(a.text && a.text.trim())); }
+function setStatus(text, err) { const s = $("status"); s.textContent = text; s.classList.toggle("err", !!err); }
+
+function build() {
+  $("eyebrow").textContent = U.eyebrow;
+  $("title").textContent = D.title;
+  $("purpose").textContent = D.purpose;
+  for (const k of ["from", "to", "use", "deadline"]) if (D[k]) $("meta").append(h("p", {}, h("b", { text: U[k] + ": " }), D[k]));
+  for (const p of D.context || []) $("context").append(h("p", { text: p }));
+  if (D.proposal && D.proposal.length) {
+    const ol = h("ol");
+    for (const s of D.proposal) ol.append(h("li", { text: s }));
+    $("context").append(h("div", { className: "proposal" }, h("span", { className: "label", text: U.proposal }), ol));
+  }
+  $("respondent-label").textContent = U.respondent;
+  $("howto").textContent = U.howto;
+  $("copy").textContent = U.copy;
+  $("download").textContent = U.download;
+
+  for (const sec of D.sections) {
+    const qs = D.questions.filter((q) => q.section === sec.id);
+    if (!qs.length) continue;
+    $("questions").append(h("h2", { text: sec.title }));
+    for (const q of qs) $("questions").append(buildQuestion(q));
+  }
+  $("respondent").addEventListener("input", () => { state.respondent = $("respondent").value; changed(); });
+}
+
+function buildQuestion(q) {
+  const box = h("section", { className: "q", id: "q-" + q.id });
+  box.append(h("div", { className: "q-head" }, h("span", { className: "qid", text: q.id }), h("h3", { text: q.q })));
+  if (q.note) box.append(h("p", { className: "note", text: q.note }));
+  if (q.why) box.append(h("p", { className: "why", text: q.why }));
+  if (q.type === "text") {
+    box.append(h("textarea", { id: "t-" + q.id, "aria-label": U.answer }));
+  } else {
+    if (q.type === "many") box.append(h("p", { className: "small", text: U.many }));
+    const opts = h("div", { className: "opts", role: q.type === "one" ? "radiogroup" : "group" });
+    q.opts.forEach((label, i) => {
+      const input = h("input", { type: q.type === "one" ? "radio" : "checkbox", name: "o-" + q.id, id: "o-" + q.id + "-" + i, value: label });
+      const span = h("span", { text: label });
+      if (q.suggest && q.suggest.opt === label) span.append(h("span", { className: "tag", text: U.suggested }));
+      opts.append(h("label", { className: "opt", htmlFor: input.id }, input, span));
+    });
+    box.append(opts);
+    if (q.suggest) box.append(h("p", { className: "sug", text: U.suggestion + ": " + q.suggest.opt + ", " + q.suggest.why }));
+  }
+  const unsure = h("input", { type: "checkbox", id: "u-" + q.id });
+  box.append(h("label", { className: "unsure", htmlFor: unsure.id }, unsure, U.unsure));
+  if (q.type !== "text") box.append(h("textarea", { id: "c-" + q.id, placeholder: U.comment, "aria-label": U.comment }));
+  box.addEventListener("input", () => { state.answers[q.id] = readQuestion(q); changed(); });
+  return box;
+}
+
+function readQuestion(q) {
+  const a = { choice: [], text: "", comment: "", unsure: $("u-" + q.id).checked };
+  if (q.type === "text") a.text = $("t-" + q.id).value;
+  else {
+    a.choice = q.opts.filter((_, i) => $("o-" + q.id + "-" + i).checked);
+    a.comment = $("c-" + q.id).value;
+  }
+  return a;
+}
+
+function fill() {
+  $("respondent").value = state.respondent || "";
+  for (const q of D.questions) {
+    const a = state.answers[q.id] || {};
+    $("u-" + q.id).checked = !!a.unsure;
+    if (q.type === "text") $("t-" + q.id).value = a.text || "";
+    else {
+      q.opts.forEach((label, i) => { $("o-" + q.id + "-" + i).checked = (a.choice || []).includes(label); });
+      $("c-" + q.id).value = a.comment || "";
+    }
+  }
+  refresh();
+}
+
+function refresh() {
+  let n = 0;
+  for (const q of D.questions) {
+    const done = answered(state.answers[q.id]);
+    if (done) n++;
+    $("q-" + q.id).classList.toggle("done", done);
+  }
+  $("progress").textContent = U.progress.replace("{n}", n).replace("{m}", D.questions.length);
+}
+
+function changed() {
+  state.at = Date.now();
+  saveLocal();
+  refresh();
+  clearTimeout(timer);
+  timer = setTimeout(flush, 1200);
+}
+
+async function flush(retried) {
+  if (!ref) return;
+  if (writing) { again = true; return; }
+  writing = true;
+  setStatus(U.saving);
+  try {
+    await ref.set({ respondent: state.respondent, answers: state.answers, at: state.at });
+    setStatus(U.online);
+  } catch (e) {
+    if (e && e.code === "unavailable" && !retried) {
+      writing = false;
+      setTimeout(() => flush(true), 800 + Math.random() * 800);
+      return;
+    }
+    setStatus(U.failed, true);
+  }
+  writing = false;
+  if (again) { again = false; flush(); }
+}
+
+function exportText() {
+  const lines = ["# " + D.title, "", U.respondent + ": " + (state.respondent || "-"), ""];
+  for (const q of D.questions) {
+    const a = state.answers[q.id] || {};
+    lines.push("## " + q.id + ". " + q.q);
+    if (q.type === "text") lines.push(a.text && a.text.trim() ? a.text.trim() : U.noAnswer);
+    else lines.push("→ " + ((a.choice || []).join("; ") || U.noAnswer));
+    if (a.unsure) lines.push(U.unsure);
+    if (a.comment && a.comment.trim()) lines.push(U.comment + ": " + a.comment.trim());
+    lines.push("");
+  }
+  return lines.join("\n");
+}
+
+$("copy").addEventListener("click", () => {
+  const text = exportText();
+  const b = $("copy");
+  navigator.clipboard.writeText(text).then(() => {
+    b.textContent = U.copied;
+    setTimeout(() => { b.textContent = U.copy; }, 2000);
+  }).catch(() => {
+    const t = $("export");
+    t.value = text; t.hidden = false; t.focus(); t.select();
+    setStatus(U.copyFailed, true);
+  });
+});
+
+build();
+const local = readLocal();
+if (local) state = local;
+fill();
+setStatus(U.connecting);
+
+(async () => {
+  const use = window.claude && window.claude.use;
+  if (!use) { setStatus(U.local); return; }
+  const [db, user, downloads] = await Promise.all([use("db"), use("user"), use("downloads")]);
+  if (downloads) {
+    $("download").hidden = false;
+    $("download").addEventListener("click", () => {
+      const name = (state.respondent || "answers").trim().replace(/\s+/g, "-").toLowerCase();
+      downloads.save({ filename: D.key + "-" + name + ".md", data: exportText() }).catch(() => {});
+    });
+  }
+  const id = user ? await user.id() : null;
+  if (!db || !id) { setStatus(U.local); return; }
+  ref = db.doc("answers/" + id);
+  try {
+    const snap = await ref.get();
+    const d = snap.exists ? snap.data() : null;
+    if (d && (d.at || 0) > (state.at || 0)) {
+      state = JSON.parse(JSON.stringify({ respondent: d.respondent || "", answers: d.answers || {}, at: d.at }));
+      saveLocal();
+      fill();
+    } else if (state.at && (!d || (d.at || 0) < state.at)) {
+      await flush();
+      return;
+    }
+    setStatus(U.online);
+  } catch (e) {
+    setStatus(U.failed, true);
+  }
+})();
+</script>

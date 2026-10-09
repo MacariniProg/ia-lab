@@ -1,0 +1,5 @@
+# OpenAI Codex adapter: interface metadata only. Instructions live in ../SKILL.md.
+interface:
+  display_name: "Start"
+  short_description: "Where every feature stands and the next skill to run"
+  default_prompt: "Run the start skill: read its SKILL.md, show where every feature stands, and propose the next skill."
