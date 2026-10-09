@@ -1,3 +1,3 @@
 @README.md
 
-Docs language: pt-BR
+Docs language: English

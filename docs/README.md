@@ -4,7 +4,7 @@ Everything in this folder belongs to **PetVida**, a fictional veterinary clinic 
 
 | Path | Written by |
 |---|---|
-| `meetings/2026-10-01-agendamento-online/` (`transcript.md`, `minutes.md`), `meetings/glossary.md` | `/transcribe` (the routing section at the end of `minutes.md`: `/discovery`) |
+| `meetings/2026-10-01-online-booking/` (`transcript.md`, `minutes.md`), `meetings/glossary.md` | `/transcribe` (the routing section at the end of `minutes.md`: `/discovery`) |
 | `features/appointment-booking/` (`README.md`, `understanding.md`, `research.md`, `product-analysis.md`, `rounds/1/`, `business-rules/`) | `/discovery` |
 | `features/appointment-booking/screens.md` | `/design` |
 | `features/appointment-booking/specs/` | `/architect` |

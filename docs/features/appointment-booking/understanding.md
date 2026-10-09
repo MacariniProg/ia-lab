@@ -1,44 +1,44 @@
-# Entendimento: agendamento online
+# Understanding: online booking
 
-Fontes: reunião [2026-10-01 agendamento online](../../meetings/2026-10-01-agendamento-online/minutes.md)
+Sources: meeting [2026-10-01 online booking](../../meetings/2026-10-01-online-booking/minutes.md)
 
-## O pedido
+## The request
 
-- O tutor entra no site, escolhe o animal, o serviço e um horário livre [2026-10-01 01:05]
-- Tirar da recepção as ligações que são só para marcar [2026-10-01 00:31]
+- The pet owner goes to the website and picks the pet, the service, and a free slot [2026-10-01 01:05]
+- Take the calls that are only for booking off the front desk [2026-10-01 00:31]
 
-## Já decidido
+## Already decided
 
-| Onde | Regra ou pergunta |
+| Where | Rule or question |
 |---|---|
-| reunião 2026-10-01 | encaixe só pela recepção [02:16] |
-| reunião 2026-10-01 | urgência nunca pelo site [09:15] |
-| reunião 2026-10-01 | lembretes ficam fora desta entrega [08:20] |
+| meeting 2026-10-01 | fit in appointments only through the front desk [02:16] |
+| meeting 2026-10-01 | emergencies never through the website [09:15] |
+| meeting 2026-10-01 | reminders are out of this delivery [08:20] |
 
-## O que existe
+## What exists
 
-- Nenhum código ainda: a grade de horários vive numa planilha por veterinário, mantida pela recepção.
+- No code yet: the schedule lives in one spreadsheet per vet, kept by the front desk.
 
-## Dependências
+## Dependencies
 
-| Feature | Por quê | Sem ela |
+| Feature | Why | Without it |
 |---|---|---|
-| `stack` | não há projeto criado | não há onde construir |
+| `stack` | no project created yet | nowhere to build |
 
-## Riscos
+## Risks
 
-- Dois tutores marcando o mesmo horário ao mesmo tempo.
-- Dados do tutor (nome, telefone) expostos a outro tutor.
-- Faltas aumentarem se marcar ficar fácil demais.
+- Two pet owners booking the same slot at the same time.
+- A pet owner's data (name, phone) shown to another pet owner.
+- No shows going up if booking gets too easy.
 
-## Perguntas para o produto
+## Questions for product
 
-1. Até quando o tutor pode cancelar sozinho? Define quanto horário a clínica perde.
-2. O agendamento nasce confirmado ou a recepção aprova? Muda a carga da recepção.
-3. Quantas consultas futuras um tutor pode ter por animal? Evita reserva em excesso.
-4. Qual a antecedência mínima para marcar? Evita consulta marcada para daqui a 10 minutos.
+1. Until when can the pet owner cancel on their own? Sets how many slots the clinic loses.
+2. Is a booking confirmed when made, or does the front desk approve it? Changes the front desk workload.
+3. How many future appointments can a pet owner have per pet? Avoids overbooking.
+4. What is the minimum lead time to book? Avoids an appointment booked 10 minutes ahead.
 
-## Perguntas de pesquisa
+## Research questions
 
-- Como outras clínicas veterinárias tratam cancelamento e falta no agendamento online?
-- O que a LGPD (Lei Geral de Proteção de Dados) exige para guardar nome e telefone do tutor?
+- How do other vet clinics handle cancellations and no shows in online booking?
+- What does the LGPD (Lei Geral de Proteção de Dados, Brazil's data protection law) require to store a pet owner's name and phone?

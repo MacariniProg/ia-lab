@@ -43,7 +43,7 @@ The first five were written in this repo. The last nine are adapted from [jsmast
 
 ## See it on an example
 
-`docs/` holds **PetVida**, a fictional veterinary clinic, with every file the skills write: a meeting with its routing, a feature (`appointment-booking`) with business rules v1 and v2, screens, and a spec ready to build, plus the scope and the design system doc. Start at [docs/README.md](docs/README.md). Running `/start` in this repo shows the board those files produce.
+`docs/` holds **PetVida**, a fictional veterinary clinic (in English), with every file the skills write: a meeting with its routing, a feature (`appointment-booking`) with business rules v1 and v2, screens, and a spec ready to build, plus the scope and the design system doc. Start at [docs/README.md](docs/README.md). Running `/start` in this repo shows the board those files produce.
 
 ## Getting started
 
@@ -87,7 +87,7 @@ app/                    minimal Next.js app
 
 Every `SKILL.md` starts with the same house rules block (`scripts/check-house-rules.sh` checks it):
 
-- Code, comments, commits, skill sources, and `AGENTS.md` are in English. Documents the skills generate follow the `Docs language:` line in the project's `AGENTS.md` or `CLAUDE.md` (`pt-BR` here).
+- Code, comments, commits, skill sources, and `AGENTS.md` are in English. Documents the skills generate follow the `Docs language:` line in the project's `AGENTS.md` or `CLAUDE.md` (`English` here).
 - Plain words; no dash as punctuation and no hyphenated compounds, except values other skills match on.
 - Every abbreviation spelled out on first use.
 - Every question offers 2 to 4 options with exactly one recommended.
@@ -101,7 +101,7 @@ Work in progress. `transcribe`, `discovery`, and `start` are tested on real meet
 
 - Start minimal. Only add something when studying it.
 - Every new piece (skill, agent, feature) must have a clear learning purpose.
-- Code, comments, commits, skill sources, and this repo's plan (`docs/ecosystem.md`) are in English. Documents the skills generate (`docs/meetings/`, `docs/features/`) follow `Docs language:` in `CLAUDE.md`.
+- Everything in this repo is in English: code, comments, commits, skill sources, the plan (`docs/ecosystem.md`), and the example documents (`Docs language: English` in `CLAUDE.md`).
 
 ## Also studying (not in this repo)
 

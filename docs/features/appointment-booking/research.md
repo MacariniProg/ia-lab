@@ -1,19 +1,19 @@
-# Pesquisa: agendamento online
+# Research: online booking
 
-Reunida em 2026-10-02. "(não verificado)" = sem fonte primária. Exemplo fictício: as fontes abaixo são ilustrativas.
+Gathered on 2026-10-02. "(not verified)" = no primary source. Fictional example: the sources below are illustrative.
 
-## Como outras clínicas tratam cancelamento e falta?
+## How do other clinics handle cancellations and no shows?
 
-- Prazos de cancelamento entre 12 h e 24 h são os mais comuns em sistemas de agenda de clínicas (não verificado)
+- Cancellation notice between 12 h and 24 h is the most common in clinic scheduling systems (not verified)
 
-**E daí:** 12 h e 24 h são as duas opções reais para a pergunta 1.
+**So what:** 12 h and 24 h are the two real options for question 1.
 
-## O que a LGPD exige para nome e telefone do tutor?
+## What does the LGPD (Lei Geral de Proteção de Dados, Brazil's data protection law) require for a pet owner's name and phone?
 
-- Dados pessoais só para a finalidade informada, com acesso restrito (não verificado)
+- Personal data only for the stated purpose, with restricted access (not verified)
 
-**E daí:** cada tutor vê só os próprios agendamentos; a recepção vê todos.
+**So what:** each pet owner sees only their own appointments; the front desk sees all of them.
 
-## Não encontrado
+## Not found
 
-- Taxa de falta típica em agendamento online de clínicas veterinárias; procurado em artigos do setor.
+- A typical no show rate for online booking at vet clinics; searched in industry articles.

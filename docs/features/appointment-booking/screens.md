@@ -1,42 +1,42 @@
-# Agendamento online · telas
+# Online booking · screens
 
 Status: done · Mode: final · Validation round: 1
 Business rules: [v2](business-rules/v2.md) · Design file: [PetVida · appointment-booking](https://design.penpot.app/#/workspace?team-id=example&file-id=example)
 Updated: 2026-10-07
 
-## Telas
+## Screens
 
-| # | Fluxo | Tela / frame | Passo da jornada | Regras | Pendências | Página · frame |
+| # | Flow | Screen / frame | Journey step | Rules | Open points | Page · frame |
 |---|---|---|---|---|---|---|
-| T-1 | 01 Marcar | Escolher animal e serviço | 1 | RN-01, RN-03, RN-05, RN-09 | | Marcar · `f-101` |
-| T-2 | 01 Marcar | Escolher horário | 2 | RN-02, RN-03, RN-04 | | Marcar · `f-102` |
-| T-3 | 01 Marcar | Confirmar agendamento | 3 | RN-06 | | Marcar · `f-103` |
-| T-4 | 01 Marcar | Agendamento confirmado | 3 | RN-06 | | Marcar · `f-104` |
-| T-5 | 02 Minhas consultas | Minhas consultas | 4 | RN-07, RN-08 | | Minhas consultas · `f-201` |
-| T-6 | 03 Recepção | Agenda do dia | 5 | RN-08, RN-10 | | Recepção · `f-301` |
+| T-1 | 01 Book | Choose pet and service | 1 | RN-01, RN-03, RN-05, RN-09 | | Book · `f-101` |
+| T-2 | 01 Book | Choose slot | 2 | RN-02, RN-03, RN-04 | | Book · `f-102` |
+| T-3 | 01 Book | Confirm booking | 3 | RN-06 | | Book · `f-103` |
+| T-4 | 01 Book | Booking confirmed | 3 | RN-06 | | Book · `f-104` |
+| T-5 | 02 My appointments | My appointments | 4 | RN-07, RN-08 | | My appointments · `f-201` |
+| T-6 | 03 Front desk | Day's agenda | 5 | RN-08, RN-10 | | Front desk · `f-301` |
 
-## Matriz de estados
+## State matrix
 
-| Tela | carregando | vazio | erro | sem permissão | sucesso |
+| Screen | loading | empty | error | no permission | success |
 |---|---|---|---|---|---|
-| T-1 Escolher animal e serviço | ✓ | ✓ (nenhum animal cadastrado) | ✓ | n/a (só tutor logado chega aqui) | ✓ |
-| T-2 Escolher horário | ✓ | ✓ (sem horário livre na semana) | ✓ | n/a (mesmo motivo) | ✓ |
-| T-3 Confirmar agendamento | n/a (dados já carregados) | n/a (sempre tem um horário escolhido) | ✓ (horário tomado nesse meio tempo) | n/a | ✓ |
-| T-5 Minhas consultas | ✓ | ✓ | ✓ | n/a | ✓ |
-| T-6 Agenda do dia | ✓ | ✓ (dia sem consultas) | ✓ | ✓ (tutor tenta abrir) | ✓ |
+| T-1 Choose pet and service | ✓ | ✓ (no pet registered) | ✓ | n/a (only a signed in pet owner gets here) | ✓ |
+| T-2 Choose slot | ✓ | ✓ (no free slot this week) | ✓ | n/a (same reason) | ✓ |
+| T-3 Confirm booking | n/a (data already loaded) | n/a (a slot is always picked) | ✓ (slot taken in the meantime) | n/a | ✓ |
+| T-5 My appointments | ✓ | ✓ | ✓ | n/a | ✓ |
+| T-6 Day's agenda | ✓ | ✓ (day with no appointments) | ✓ | ✓ (a pet owner tries to open it) | ✓ |
 
-## Casos de borda
+## Edge cases
 
-| Caso | Regra | Onde aparece |
+| Case | Rule | Where it shows |
 |---|---|---|
-| Animal já tem 2 consultas futuras | RN-05 | T-1 `Escolher animal e serviço — limite` |
-| Horário a menos de 2 h | RN-04 | T-2: não aparece na lista |
-| Outro tutor pegou o horário antes de confirmar | RN-02 | T-3 `Confirmar agendamento — erro` |
-| Cancelar a menos de 12 h | RN-07, RN-08 | T-5 `Minhas consultas — fora do prazo`: botão some, mostra o telefone |
-| Tutor quer encaixe ou urgência | RN-09 | T-1: aviso com o telefone da clínica |
+| The pet already has 2 future appointments | RN-05 | T-1 `Choose pet and service — limit` |
+| Slot less than 2 h away | RN-04 | T-2: not shown in the list |
+| Another pet owner took the slot before confirming | RN-02 | T-3 `Confirm booking — error` |
+| Cancelling less than 12 h before | RN-07, RN-08 | T-5 `My appointments — past deadline`: the button goes away, the phone number shows |
+| The pet owner wants a fit in or an emergency | RN-09 | T-1: notice with the clinic's phone number |
 
-## Decisões
+## Decisions
 
-| # | Decisão | Telas | Fonte |
+| # | Decision | Screens | Source |
 |---|---|---|---|
-| D-1 | O telefone da clínica aparece fixo no rodapé de T-1 e T-5, não só no aviso | T-1, T-5 | revisão da Ana por comentário no Penpot, 2026-10-06 |
+| D-1 | The clinic's phone number is fixed in the footer of T-1 and T-5, not only in the notice | T-1, T-5 | Ana's review by comment in Penpot, 2026-10-06 |

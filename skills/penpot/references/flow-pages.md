@@ -21,10 +21,10 @@ How a screen file is organized, so anyone opening it reads it the same way. Word
 
 ## Frames and states
 
-- **Name:** `<Screen> — <state>` (e.g. `Agendamentos — vazio`); the default state is just `<Screen>`.
+- **Name:** `<Screen> — <state>` (e.g. `Appointments — empty`); the default state is just `<Screen>`.
 - **Order in the row:** default → loading → error → empty → success. Dialogs with an action: dialog → saving → save error.
 - **Kinds** (the flow tag of each frame): default, dialog, loading, error, success, empty. The legend shows each with its meaning, in the docs language.
-- **Validate drafts** (`/design validate`) get their own pages, prefixed (`Validação v1 · 01 <flow>`), so final pages are never mixed with drafts.
+- **Validate drafts** (`/design validate`) get their own pages, prefixed (`Validation v1 · 01 <flow>`), so final pages are never mixed with drafts.
 
 ## Board specs
 

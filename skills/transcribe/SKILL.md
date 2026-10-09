@@ -45,11 +45,11 @@ Acts. A meeting always belongs to the project the skill runs in; never ask which
    Then move the raw files into `<dir>` = that folder (or keep them in `<tmp>` if so chosen).
 3. **Transcript.** Read `templates/transcript.md` and write `transcript.md`. Read long SRT files in chunks of about 15 minutes. Cleaning rules:
    - one paragraph per speaker turn: `**[mm:ss] Name:** text`; merge consecutive cues of the same speaker;
-   - drop a turn that is only a filler ("uhum", "aham", "tá", "ok");
+   - drop a turn that is only a filler ("uh huh", "yeah", "ok", or their equivalents in the meeting language);
    - fix only the terms the glossary lists; never reword;
    - unclear stretch → `[?]`; never fill a gap by inference;
    - a demo stretch where only test values are typed → one line `[mm:ss–mm:ss] demo: <what was shown>`.
-   - an off topic stretch (small talk, personal remarks) → one line `[mm:ss–mm:ss] conversa fora de pauta (<subject>)`, in the meeting's language.
+   - an off topic stretch (small talk, personal remarks) → one line `[mm:ss–mm:ss] off topic (<subject>)`, written in the meeting's language.
 4. **Minutes.** Read `templates/minutes.md` and write `minutes.md`. Every topic carries its time ranges so a reader can jump to the transcript.
 5. **Report** (below).
 

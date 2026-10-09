@@ -1,10 +1,10 @@
-# Glossário de termos
+# Glossary
 
-Termos que as legendas e o Whisper erram. `/transcribe` corrige só o que está aqui.
+Terms the captions and Whisper get wrong. `/transcribe` corrects only what is listed here.
 
-| Ouvido | Correto | Observação |
+| Heard | Correct | Note |
 |---|---|---|
-| pé de vida, pet vida | PetVida | nome do produto |
-| tudo, tutora | tutor | dono do animal, quem agenda |
-| em caixe | encaixe | consulta fora da grade, só a recepção marca |
-| agenda do dr | agenda do veterinário | grade de horários de cada veterinário |
+| pet via, pet video | PetVida | product name |
+| tutors, two door | pet owner | the person who books |
+| fit and | fit in | an appointment outside the schedule, only the front desk books it |
+| doc's agenda | vet's schedule | weekly working hours of each vet |

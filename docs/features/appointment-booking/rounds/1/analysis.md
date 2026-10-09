@@ -1,39 +1,39 @@
-# Análise, rodada 1: agendamento online
+# Analysis, round 1: online booking
 
-Fontes: [answers.raw.md](answers.raw.md) (Ana em 2026-10-03, Carla em 2026-10-05). Reaberta em 2026-10-05: Carla respondeu depois da primeira análise. Ninguém pendente.
+Sources: [answers.raw.md](answers.raw.md) (Ana on 2026-10-03, Carla on 2026-10-05). Reopened on 2026-10-05: Carla answered after the first analysis. Nobody pending.
 
-## O que mudou no nosso entendimento
+## What changed in our understanding
 
-1. **A recepção quer registrar falta.** Carla (B1); não estava no fluxo proposto.
+1. **The front desk wants to record no shows.** Carla (B1); it was not in the proposed flow.
 
-## Hipóteses
+## Hypotheses
 
-- **H-1 (Confirmação automática): confirmada.** Carla (A2): "sim, já confirmado".
-- **H-2 (Limite por animal): confirmada.** Ana (A3) e Carla (A3): 2.
+- **H-1 (Automatic confirmation): confirmed.** Carla (A2): "yes, confirmed right away".
+- **H-2 (Limit per pet): confirmed.** Ana (A3) and Carla (A3): 2.
 
-## Consenso: vira regra
+## Consensus: becomes a rule
 
-| Regra | Base |
+| Rule | Basis |
 |---|---|
-| Cancelamento pelo tutor até 12 h antes | Carla (A1), com o veterinário |
-| Agendamento nasce confirmado | Carla (A2); Ana (A2) |
-| Até 2 consultas futuras por animal | Ana (A3); Carla (A3) |
-| Antecedência mínima de 2 h | Ana (A4); Carla (A4) |
+| Pet owner cancels up to 12 h before | Carla (A1), with the vet |
+| A booking is confirmed when made | Carla (A2); Ana (A2) |
+| Up to 2 future appointments per pet | Ana (A3); Carla (A3) |
+| Minimum lead time of 2 h | Ana (A4); Carla (A4) |
 
-## Pontos em aberto
+## Open points
 
-Nenhum depois da resposta da Carla. Na primeira análise (só Ana) ficaram P-1 (prazo de cancelamento) e P-2 (confirmação), ver [v1](../../business-rules/v1.md).
+None after Carla's answer. The first analysis (Ana only) left P-1 (cancellation deadline) and P-2 (confirmation) open; see [v1](../../business-rules/v1.md).
 
-## Novos requisitos
+## New requirements
 
-| Requisito | Quem pediu | Onde entra |
+| Requirement | Asked by | Where it goes |
 |---|---|---|
-| Recepção marca comparecimento ou falta | Carla (B1) | esta feature, RN-10 |
+| Front desk marks attendance or no show | Carla (B1) | this feature, RN-10 |
 
-## O que o código diz sobre as respostas
+## What the code says about the answers
 
-- Não há código ainda.
+- There is no code yet.
 
-## Pauta da próxima rodada
+## Agenda for the next round
 
-Nenhuma: as regras estão fechadas.
+None: the rules are settled.

@@ -1,36 +1,36 @@
 # Design · PetVida
 
-Escrito por `/penpot setup` em 2026-10-06. Exemplo fictício: os ids e links abaixo não existem.
+Written by `/penpot setup` on 2026-10-06. Fictional example: the ids and links below do not exist.
 
-## Ferramenta
+## Tool
 
 - **Penpot:** https://design.penpot.app
-- **Projeto:** PetVida (`example-project-id`)
-- **Biblioteca:** PetVida DS (`example-library-id`), ligada a todos os arquivos de tela.
+- **Project:** PetVida (`example-project-id`)
+- **Library:** PetVida DS (`example-library-id`), linked to every screen file.
 
-## Arquivos de tela
+## Screen files
 
-- Um arquivo por feature: `PetVida · <feature>`.
-- Páginas: `Validação v<n>`, depois uma por fluxo.
-- Tamanhos: telas do tutor em celular 390×844 (a maioria agenda pelo celular); telas da recepção em 1440×900.
+- One file per feature: `PetVida · <feature>`.
+- Pages: `Validation v<n>`, then one per flow.
+- Sizes: pet owner screens on mobile 390×844 (most people book from their phone); front desk screens at 1440×900.
 
 ## Tokens
 
-- Tema `claro`, conjuntos `primitive` e `semantic`. As telas usam só `semantic` (por exemplo `color.action.primary`, `color.status.danger`).
-- Verde é a cor da marca e da ação principal; vermelho só para erro e falta.
+- Theme `light`, sets `primitive` and `semantic`. Screens use `semantic` only (for example `color.action.primary`, `color.status.danger`).
+- Green is the brand color and the main action color; red only for errors and no shows.
 
-## Tipografias
+## Typography
 
 - `Heading/L`, `Heading/M`, `Body/M`, `Body/S`, `Label/S`.
-- Anotações das páginas (legenda, notas de regra): `Body/S` (`S.cfg.typo`).
+- Page annotations (legend, rule notes): `Body/S` (`S.cfg.typo`).
 
-## Regras
+## Rules
 
-- "Toda tela que carrega dados tem os estados carregando, vazio e erro desenhados." (regra da equipe)
-- "O telefone da clínica aparece em toda tela onde o tutor não consegue resolver sozinho." (D-1 de `appointment-booking`)
+- "Every screen that loads data has its loading, empty, and error states drawn." (team rule)
+- "The clinic's phone number shows on every screen where the pet owner cannot solve the problem alone." (D-1 of `appointment-booking`)
 
-## Arquivos
+## Files
 
-| Arquivo | Link |
+| File | Link |
 |---|---|
-| PetVida · appointment-booking | [abrir](https://design.penpot.app/#/workspace?team-id=example&file-id=example) |
+| PetVida · appointment-booking | [open](https://design.penpot.app/#/workspace?team-id=example&file-id=example) |

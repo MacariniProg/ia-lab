@@ -1,56 +1,56 @@
-# Agendamento online: perguntas para a clínica
+# Online booking: questions for the clinic
 
-**Objetivo:** fechar as regras de cancelamento e confirmação antes de desenhar as telas.
+**Goal:** settle the cancellation and confirmation rules before designing the screens.
 
-**De:** Ana (produto) · **Para:** Ana, Carla · **Como as respostas serão usadas:** viram as regras de negócio do agendamento online. Sem resposta, seguimos a sugestão.
+**From:** Ana (product) · **To:** Ana, Carla · **How the answers will be used:** they become the business rules of online booking. With no answer, we go with the suggestion.
 
-## Contexto
+## Context
 
-Na reunião de 2026-10-01 combinamos que o tutor marca pelo site só em horários livres da grade, que encaixe e urgência ficam com a recepção e que lembretes ficam para depois.
+At the 2026-10-01 meeting we agreed that the pet owner books on the website only in free slots of the schedule, that fit in appointments and emergencies stay with the front desk, and that reminders come later.
 
-> **Proposta (para validar)**
+> **Proposal (to validate)**
 >
-> 1. O tutor escolhe animal, serviço e horário.
-> 2. O agendamento já fica confirmado.
-> 3. O tutor pode cancelar sozinho até um prazo.
+> 1. The pet owner picks the pet, the service, and the slot.
+> 2. The booking is confirmed right away.
+> 3. The pet owner can cancel on their own up to a deadline.
 
-## Como responder
+## How to answer
 
-Até 2026-10-05, uns 5 minutos. "Não sei" também ajuda.
+By 2026-10-05, about 5 minutes. "I don't know" helps too.
 
-## A. Cancelamento e confirmação
+## A. Cancellation and confirmation
 
-### A1. Até quantas horas antes o tutor pode cancelar sozinho?
+### A1. Up to how many hours before can the pet owner cancel on their own?
 
-_Depois disso, só a recepção cancela._
+_After that, only the front desk cancels._
 
-Opções: 12 h · 24 h · outro.
-_Sugestão: 12 h, perde menos agendamentos e ainda dá tempo de remarcar._
-
->
-
-### A2. O agendamento já nasce confirmado?
-
-Opções: sim, se o horário está livre · não, a recepção aprova.
-_Sugestão: sim, a grade já garante que o horário existe._
+Options: 12 h · 24 h · other.
+_Suggestion: 12 h, fewer lost bookings and still time to rebook._
 
 >
 
-### A3. Quantas consultas futuras um tutor pode ter por animal?
+### A2. Is a booking confirmed when made?
 
-Opções: 1 · 2 · sem limite.
-_Sugestão: 2, cobre consulta e vacina sem reserva em excesso._
-
->
-
-### A4. Com quanta antecedência mínima o tutor pode marcar?
-
-Opções: 1 h · 2 h · 1 dia.
+Options: yes, if the slot is free · no, the front desk approves.
+_Suggestion: yes, the schedule already guarantees the slot exists._
 
 >
 
-## B. Fechamento
+### A3. How many future appointments can a pet owner have per pet?
 
-### B1. Algo mais que devemos saber?
+Options: 1 · 2 · no limit.
+_Suggestion: 2, covers a consultation and a vaccine without overbooking._
+
+>
+
+### A4. What is the minimum lead time for the pet owner to book?
+
+Options: 1 h · 2 h · 1 day.
+
+>
+
+## B. Wrap up
+
+### B1. Anything else we should know?
 
 >

@@ -1,37 +1,37 @@
-# Análise de produto: agendamento online
+# Product analysis: online booking
 
-## Fluxo de hoje
+## Today's flow
 
-1. O tutor liga para a clínica.
-2. A recepção abre a planilha, procura um horário livre e anota.
-3. A recepção confirma por telefone.
+1. The pet owner calls the clinic.
+2. The front desk opens the spreadsheet, looks for a free slot, and writes it down.
+3. The front desk confirms by phone.
 
-## O que quebra
+## What breaks
 
-- A recepção passa a manhã no telefone · recepção · reunião 2026-10-01 [00:31]
-- O tutor só marca no horário comercial · tutor · entendimento
+- The front desk spends the morning on the phone · front desk · meeting 2026-10-01 [00:31]
+- The pet owner can only book during business hours · pet owner · understanding
 
-## Oportunidades
+## Opportunities
 
-- Marcar a qualquer hora, inclusive à noite.
-- A recepção ver a agenda do dia num lugar só, sem planilha.
+- Book at any time, including at night.
+- The front desk sees the day's agenda in one place, without a spreadsheet.
 
-## Fluxo proposto
+## Proposed flow
 
-1. O tutor escolhe animal e serviço.
-2. Escolhe um horário livre.
-3. Confirma os dados e recebe a confirmação na tela.
-4. Vê e cancela as próprias consultas.
-5. A recepção vê a agenda do dia e marca comparecimento ou falta.
+1. The pet owner picks the pet and the service.
+2. Picks a free slot.
+3. Confirms the details and sees the confirmation on screen.
+4. Sees and cancels their own appointments.
+5. The front desk sees the day's agenda and marks attendance or no show.
 
-## Hipóteses
+## Hypotheses
 
-O questionário confirma ou rejeita cada uma.
+H-n (hypothesis). The questionnaire confirms or rejects each one.
 
-- **H-1 · Confirmação automática:** se o horário está livre na grade, a recepção não precisa aprovar. Testada pela pergunta A2.
-- **H-2 · Limite por animal:** duas consultas futuras por animal bastam. Testada pela pergunta A3.
+- **H-1 · Automatic confirmation:** if the slot is free on the schedule, the front desk does not need to approve. Tested by question A2.
+- **H-2 · Limit per pet:** two future appointments per pet are enough. Tested by question A3.
 
-## Fora desta feature
+## Out of this feature
 
-- Lembretes por WhatsApp: `appointment-reminders`.
-- Pagamento online: depois.
+- WhatsApp reminders: `appointment-reminders`.
+- Online payment: later.

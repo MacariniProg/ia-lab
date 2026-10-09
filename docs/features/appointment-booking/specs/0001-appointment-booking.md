@@ -1,118 +1,118 @@
-# 0001. Agendamento online com horários calculados da grade
+# 0001. Online booking with slots computed from the schedule
 
 **Date**: 2026-10-08
 **Status**: Proposed
 
 ## Summary
 
-O tutor marca consulta ou vacina pelo site e o sistema calcula os horários livres na hora, a partir da grade de cada veterinário e das consultas já marcadas. Não guardamos uma tabela de horários pré gerados. Para construir, basta a grade, os serviços com a duração e as consultas.
+The pet owner books a consultation or a vaccine on the website, and the system computes the free slots on the fly from each vet's schedule and the appointments already booked. We do not store a table of pregenerated slots. To build it, you only need the schedule, the services with their duration, and the appointments.
 
 ## Context
 
-Hoje a grade vive numa planilha e a recepção marca tudo por telefone. A feature precisa mostrar só horários livres (RN-02), respeitar a duração de cada serviço (RN-03) e impedir que dois tutores peguem o mesmo horário. Sem decidir de onde vêm os horários livres, a construção inventaria a regra.
+Today the schedule lives in a spreadsheet and the front desk books everything by phone. The feature must show only free slots (RN-02, business rule), respect each service's duration (RN-03), and stop two pet owners from taking the same slot. Without deciding where free slots come from, the build would invent the rule.
 
 ## Requirements
 
 **Inputs**: [business rules v2](../business-rules/v2.md) · [screens](../screens.md) (done)
 
 **User stories**:
-- Como tutor, quero marcar consulta pelo site para não depender do telefone.
-- Como recepção, quero ver a agenda do dia e marcar falta para saber quem falta muito.
+- As a pet owner, I want to book an appointment on the website so I don't depend on the phone.
+- As the front desk, I want to see the day's agenda and mark no shows so I know who misses appointments often.
 
-**Acceptance criteria**:
-- **AC-1** (RN-01; T-1): sem conta, o tutor é levado a criar uma antes de agendar.
-- **AC-2** (RN-02, RN-03, RN-04; T-2): a lista mostra só intervalos livres do tamanho do serviço, a partir de 2 h depois de agora.
-- **AC-3** (RN-02; T-3): se o horário foi tomado entre a escolha e a confirmação, o tutor vê o erro e volta para T-2; nunca existem duas consultas no mesmo horário do mesmo veterinário.
-- **AC-4** (RN-05; T-1): um animal com 2 consultas futuras não pode marcar outra.
-- **AC-5** (RN-06; T-4): a consulta marcada já aparece como confirmada.
-- **AC-6** (RN-07, RN-08; T-5): o tutor cancela até 12 h antes; depois disso o botão some e aparece o telefone.
-- **AC-7** (RN-10; T-6): a recepção marca cada consulta do dia como realizada ou falta.
-- **AC-8** (RN-09; T-1): o site não oferece encaixe nem urgência; mostra o telefone.
-- **AC-9**: um tutor nunca vê consultas de outro tutor.
+**Acceptance criteria** (AC, acceptance criterion):
+- **AC-1** (RN-01; T-1): without an account, the pet owner is taken to create one before booking.
+- **AC-2** (RN-02, RN-03, RN-04; T-2): the list shows only free stretches as long as the service, starting 2 h from now.
+- **AC-3** (RN-02; T-3): if the slot was taken between choosing and confirming, the pet owner sees the error and goes back to T-2; there are never two appointments in the same slot of the same vet.
+- **AC-4** (RN-05; T-1): a pet with 2 future appointments cannot book another.
+- **AC-5** (RN-06; T-4): a booked appointment already shows as confirmed.
+- **AC-6** (RN-07, RN-08; T-5): the pet owner cancels up to 12 h before; after that the button goes away and the phone number shows.
+- **AC-7** (RN-10; T-6): the front desk marks each appointment of the day as attended or no show.
+- **AC-8** (RN-09; T-1): the website offers neither fit in appointments nor emergencies; it shows the phone number.
+- **AC-9**: a pet owner never sees another pet owner's appointments.
 
 ## Options considered
 
-### Option 1: Calcular horários livres na leitura
+### Option 1: Compute free slots on read
 
-A cada busca, o sistema pega a grade do veterinário, tira as consultas marcadas e corta em intervalos do tamanho do serviço.
-
-**Pros**:
-- A grade é a única fonte; mudar a grade muda os horários na hora.
-
-**Cons**:
-- Cada busca faz uma conta; com poucos veterinários, é barata.
-
-### Option 2: Tabela de horários pré gerados
-
-Um processo gera todos os horários da semana numa tabela e marca cada um como livre ou ocupado.
+On each search, the system takes the vet's schedule, removes the booked appointments, and cuts it into stretches as long as the service.
 
 **Pros**:
-- A busca é uma leitura simples.
+- The schedule is the only source; changing the schedule changes the slots right away.
 
 **Cons**:
-- Mudou a grade, precisa gerar de novo; dois lugares para a mesma verdade.
+- Each search does a computation; with few vets, it is cheap.
+
+### Option 2: Table of pregenerated slots
+
+A job generates every slot of the week into a table and marks each one as free or taken.
+
+**Pros**:
+- A search is a simple read.
+
+**Cons**:
+- When the schedule changes, it must be generated again; two places for the same truth.
 
 ## Decision
 
-**Chosen option**: Option 1: Calcular horários livres na leitura
+**Chosen option**: Option 1: Compute free slots on read
 
-Os horários livres são calculados da grade e das consultas a cada busca, e a marcação é protegida por uma restrição única de veterinário e início.
+Free slots are computed from the schedule and the appointments on each search, and booking is protected by a unique constraint on vet and start time.
 
 ## Rationale
 
-A clínica tem poucos veterinários e a grade muda toda semana pela planilha da recepção. Calcular na leitura mantém uma fonte só. O risco de dois tutores no mesmo horário (AC-3) fica com o banco, por uma restrição única, e não com a tela.
+The clinic has few vets and the schedule changes every week through the front desk spreadsheet. Computing on read keeps a single source. The risk of two pet owners in the same slot (AC-3) is handled by the database, through a unique constraint, not by the screen.
 
 ## Feature design
 
 **Data model sketch**:
-- `vet` (id, nome)
-- `work_block` (id, vet_id FK, dia da semana, início, fim)
-- `service` (id, nome, duração em minutos)
-- `pet` (id, tutor_id FK, nome)
-- `appointment` (id, pet_id FK, vet_id FK, service_id FK, início, fim, status); único (vet_id, início) enquanto status = confirmada
+- `vet` (id, name)
+- `work_block` (id, vet_id FK, weekday, start, end)
+- `service` (id, name, duration in minutes)
+- `pet` (id, owner_id FK, name)
+- `appointment` (id, pet_id FK, vet_id FK, service_id FK, start, end, status); unique (vet_id, start) while status = confirmed
 
-**State transitions**: confirmada → cancelada · confirmada → realizada · confirmada → falta
+**State transitions**: confirmed → cancelled · confirmed → attended · confirmed → no show
 
 **API surface**:
 | Endpoint | Method | Key inputs | Key outputs | Auth | Key errors |
 |---|---|---|---|---|---|
-| /slots | GET | service_id, semana | lista de (vet, início) | tutor | 422 |
-| /appointments | POST | pet_id, vet_id, service_id, início | id, status | tutor | 409 horário tomado, 422 limite ou antecedência |
-| /appointments/:id/cancel | POST | | status | tutor dono, recepção | 403 fora do prazo |
-| /appointments/:id/attendance | POST | realizada ou falta | status | recepção | 403 |
+| /slots | GET | service_id, week | list of (vet, start) | pet owner | 422 |
+| /appointments | POST | pet_id, vet_id, service_id, start | id, status | pet owner | 409 slot taken, 422 limit or lead time |
+| /appointments/:id/cancel | POST | | status | owning pet owner, front desk | 403 past the deadline |
+| /appointments/:id/attendance | POST | attended or no show | status | front desk | 403 |
 
 **Value sourcing**:
 | Action | Value produced / displayed | Source |
 |---|---|---|
-| listar horários | intervalos livres | `work_block` menos `appointment` confirmadas, cortado pela duração de `service` |
-| listar horários | "agora" para a antecedência de 2 h | relógio do servidor, fuso da clínica (`America/Sao_Paulo`) |
-| cancelar | prazo de 12 h | `appointment.início` menos 12 h, mesmo fuso |
+| list slots | free stretches | `work_block` minus confirmed `appointment` rows, cut by the `service` duration |
+| list slots | "now" for the 2 h lead time | server clock, clinic time zone (`America/Sao_Paulo`) |
+| cancel | 12 h deadline | `appointment.start` minus 12 h, same time zone |
 
-**Key invariants**: nunca duas consultas confirmadas com o mesmo veterinário e início; no máximo 2 consultas futuras confirmadas por animal.
+**Key invariants**: never two confirmed appointments with the same vet and start; at most 2 confirmed future appointments per pet.
 
-**Security model**: o tutor lê e cancela só consultas dos próprios animais; a recepção lê e altera todas.
+**Security model**: a pet owner reads and cancels only their own pets' appointments; the front desk reads and changes all of them.
 
 **Critical test scenarios**:
-- Happy path: marcar, ver em Minhas consultas, cancelar no prazo, verifica **AC-2**, **AC-5**, **AC-6**
-- Failure case: dois tutores confirmam o mesmo horário ao mesmo tempo, verifica **AC-3**
-- Auth/permission: tutor tenta abrir consulta de outro tutor e recebe 404, verifica **AC-9**
+- Happy path: book, see it in My appointments, cancel within the deadline, verifies **AC-2**, **AC-5**, **AC-6**
+- Failure case: two pet owners confirm the same slot at the same time, verifies **AC-3**
+- Auth/permission: a pet owner tries to open another pet owner's appointment and gets 404, verifies **AC-9**
 
 ## Build plan
 
-1. Migração do modelo de dados com a restrição única, satisfaz **AC-3**, **AC-4**
-2. Cálculo de horários livres e `/slots`, satisfaz **AC-2**
-3. Marcar e cancelar com as regras de prazo e limite, satisfaz **AC-1**, **AC-4**, **AC-5**, **AC-6**, **AC-9**
-4. Telas T-1 a T-5 a partir dos frames, satisfaz **AC-1**, **AC-6**, **AC-8**
-5. Agenda do dia (T-6) com realizada e falta, satisfaz **AC-7**
+1. Data model migration with the unique constraint, satisfies **AC-3**, **AC-4**
+2. Free slot computation and `/slots`, satisfies **AC-2**
+3. Book and cancel with the deadline and limit rules, satisfies **AC-1**, **AC-4**, **AC-5**, **AC-6**, **AC-9**
+4. Screens T-1 to T-5 from the frames, satisfies **AC-1**, **AC-6**, **AC-8**
+5. Day's agenda (T-6) with attended and no show, satisfies **AC-7**
 
 ## Consequences
 
 **Positive**:
-- A grade é a única fonte de horários.
+- The schedule is the only source of slots.
 
 **Negative / tradeoffs**:
-- A grade ainda vem da planilha; alguém precisa cadastrá-la no sistema.
+- The schedule still comes from the spreadsheet; someone needs to enter it into the system.
 
 ## Follow up
 
-- [ ] O stack ainda não tem spec: `/architect stack` antes de `/develop appointment-booking`.
+- [ ] The stack has no spec yet: `/architect stack` before `/develop appointment-booking`.
