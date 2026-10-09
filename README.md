@@ -62,7 +62,7 @@ claude          # skills load from .claude/skills/
 
 Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
 
-Use them in another project: copy the `skills/<name>/` folders you want into that project's `.claude/skills/` (or `.agents/skills/` for other agents). Each skill works on its own. How projects install and update them is still an open question (see the plan).
+Use them in another project: copy the `skills/<name>/` folders you want into that project's `.claude/skills/` (or `.agents/skills/` for other agents). Each skill works on its own. How projects install and update them is still open (see `improvements/`).
 
 Run the app (only a placeholder page):
 
@@ -77,9 +77,10 @@ npm run dev
 skills/<name>/          skill sources: SKILL.md, plus modes/, templates/, references/, scripts/, agents/ when needed
 .claude/skills/<name>   symlinks to skills/, so Claude Code loads them here
 .claude/agents/         scout and researcher subagents (read only helpers some skills use)
-scripts/                check-house-rules.sh: fails when the shared rules block drifts between skills
-docs/ecosystem.md       the plan: decisions, how skills hand off, test status, open questions
-docs/                   the PetVida example (everything except ecosystem.md)
+scripts/                check-house-rules.sh: fails when the shared rules block drifts between skills;
+                        analyze-token-usage.mjs (`npm run tokens`): where a Claude Code session spent its tokens
+improvements/           decisions and fixes still owed, one file each
+docs/                   the PetVida example
 app/                    minimal Next.js app
 ```
 
@@ -95,13 +96,13 @@ Every `SKILL.md` starts with the same house rules block (`scripts/check-house-ru
 
 ## Status
 
-Work in progress. `transcribe`, `discovery`, and `start` are tested on real meetings; `design` and `penpot` are tested without drawing; the nine adapted skills are not tested yet. Progress, decisions, and open questions are in [docs/ecosystem.md](docs/ecosystem.md).
+Work in progress. `transcribe`, `discovery`, and `start` are tested on real meetings; `design` and `penpot` are tested without drawing; the nine adapted skills are not tested yet. Decisions and fixes still owed are in [improvements/](improvements/README.md).
 
 ## Rules
 
 - Start minimal. Only add something when studying it.
 - Every new piece (skill, agent, feature) must have a clear learning purpose.
-- Everything in this repo is in English: code, comments, commits, skill sources, the plan (`docs/ecosystem.md`), and the example documents (`Docs language: English` in `CLAUDE.md`).
+- Everything in this repo is in English: code, comments, commits, skill sources, `improvements/`, and the example documents (`Docs language: English` in `CLAUDE.md`).
 
 ## Also studying (not in this repo)
 
@@ -116,6 +117,6 @@ Claude Code mods tested locally, as references for hooks and UI:
 
 ## Credits and license
 
-The `scope`, `audit`, `architect`, `develop`, `check`, `test`, `document`, `sync`, and `debug` skills are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills) (commit `43b69e4`) under the MIT license; each of those folders carries a copy of it.
+The `scope`, `audit`, `architect`, `develop`, `check`, `test`, `document`, `sync`, and `debug` skills are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills) (commit `43b69e4`) under the MIT license; each of those folders carries a copy of it. So is `scripts/analyze-token-usage.mjs`.
 
 The rest of this repo has no license yet.
