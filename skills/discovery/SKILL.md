@@ -25,12 +25,12 @@ Turns what was said in a meeting, or a new idea, into business rules product agr
 
 | | Path |
 |---|---|
-| Reads | `docs/meetings/<date-topic>/minutes.md` and `transcript.md`; `docs/meetings/glossary.md`; `docs/scope.md`; other `docs/features/*/business-rules/v*.md` (rules already settled, questions already asked); `AGENTS.md` / `README.md`; the code, read only, to know what exists |
-| Writes | the routing section of a meeting's `minutes.md` (only that section); `docs/features/<slug>/`: `README.md`, `understanding.md`, `research.md`, `product-analysis.md`; per round in `rounds/<n>/`: `questionnaire.md` + `.html`, `answers.raw.md` (existing sections never edited), `analysis.md`; `business-rules/v<n>.md` |
+| Reads | `docs/domain/` (rules and terms of the area); `docs/meetings/<date-topic>/minutes.md` and `transcript.md`; `docs/meetings/glossary.md`; `docs/scope.md`; other `docs/features/*/business-rules/v*.md` (rules already settled, questions already asked); `AGENTS.md` / `README.md`; the code, read only, to know what exists |
+| Writes | the routing section of a meeting's `minutes.md` (only that section); `docs/features/<slug>/`: `README.md`, `understanding.md`, `research.md`, `product-analysis.md`; per round in `rounds/<n>/`: `questionnaire.md` + `.html`, `answers.raw.md` (existing sections never edited), `analysis.md`; `business-rules/v<n>.md`; `docs/domain/` `README.md`, `rules.md`, `terms.md` (adds only, after asking) |
 
 Never writes code, specs, or `docs/scope.md`: a new feature (from meeting routing or idea mode) that has no row in an existing `docs/scope.md` is named in the report Heads up, with `/scope <slug>` to enroll it. A product sized idea goes to `/scope` first.
 
-Business rules are `RN-n` (Regra de Negócio), open points `P-n` (Pendência), hypotheses `H-n` (Hipótese). Numbers never change once written; a dropped rule stays, marked `dropped`.
+Business rules are `RN-n` (Regra de Negócio), open points `P-n` (Pendência), hypotheses `H-n` (Hipótese). Domain rules are `RD-n` (Regra de Domínio): true of the area whatever the product does, kept in `docs/domain/` and shared by every feature. Numbers never change once written; a dropped rule stays, marked `dropped`.
 
 ## Asks vs acts
 
@@ -40,7 +40,8 @@ Acts: reads, explores, drafts every file. Asks:
 - step 0, in one round: which feature (new slug or an existing one) and the depth;
 - idea mode: the interview (`modes/idea.md`);
 - step 4: who answers the questionnaire, their language, the deadline; then before publishing it;
-- step 5: when an answer contradicts a settled rule (keep, change, or ask again).
+- step 5: when an answer contradicts a settled rule (keep, change, or ask again);
+- step 7: which domain facts to add to `docs/domain/`.
 
 ## Steps
 
@@ -64,13 +65,14 @@ Every step that writes a file adds its row to the `Files` table in `README.md` a
    - A sentence → idea mode. Several features or a new product → recommend `/scope`, stop.
    - Nothing → ask what it is about.
    For a new feature, ask in one round: **slug** (proposed from the content, recommended) or an existing feature it extends; **depth**: `light` (understanding, questionnaire, business rules) for a change to something that exists with few unknowns; `full` (adds research and product analysis) for a new area, an outside standard or regulation, competitors, or several roles. Create the folder and `README.md` (`templates/readme.md`, status `drafting`).
-1. **Understanding.** Read the mode file (`modes/meeting.md` or `modes/idea.md`) and follow it. Done when `understanding.md` exists, every claim cites its source, and its "Questions for product" list is not empty (empty → go to step 6).
-2. **Research** (`full` only). Read `templates/research.md`. Investigate what the understanding cannot answer from inside: outside standards, regulation, how other products solve it. Primary sources only, every claim with its link, `(not verified)` when there is none. Run it as a background subagent when the agent can, and draft step 3 meanwhile. When it lands, read its "so what" lines against the draft: add new questions for product to `understanding.md` and new hypotheses to `product-analysis.md`. Done when every research question in the understanding has an answer or `not found`.
+1. **Understanding.** Read `docs/domain/` when it exists: a question it already answers is not asked again, and a rule it holds is cited, not rediscovered. Read the mode file (`modes/meeting.md` or `modes/idea.md`) and follow it. Done when `understanding.md` exists, every claim cites its source, and its "Questions for product" list is not empty (empty → go to step 6).
+2. **Research** (`full` only). Read `templates/research.md`. Investigate what the understanding and `docs/domain/` cannot answer: outside standards, regulation, how other products solve it. Primary sources only, every claim with its link, `(not verified)` when there is none. Run it as a background subagent when the agent can, and draft step 3 meanwhile. When it lands, read its "so what" lines against the draft: add new questions for product to `understanding.md` and new hypotheses to `product-analysis.md`. Done when every research question in the understanding has an answer or `not found`.
 3. **Product analysis** (`full` only). Read `templates/product-analysis.md`. The flow as it is, what breaks, opportunities, the proposed flow, hypotheses `H-n` the questionnaire will confirm or reject. Done when every hypothesis maps to at least one question.
 4. **Questionnaire, round `<n>`.** Ask in one round: who answers (names and roles), their language, the deadline. Read `templates/questionnaire.md` and write `rounds/<n>/questionnaire.md`. Round 1 asks the understanding's questions and the hypotheses; later rounds ask only the open `P-n` of the latest business rules version. Then read `templates/questionnaire.html`, fill its data block from the Markdown, and save `rounds/<n>/questionnaire.html`. Show the questionnaire and ask before publishing: publish as an Artifact (recommended when the agent can publish one) with capabilities `{db: {rules: [{path: "answers", read: "view", write: "owner"}, {path: "answers/{self}", write: "interact"}]}, user: {}, downloads: true}`, or hand over the Markdown to send as it is. Respondents need edit access to the Artifact (Contributor) to save; say so. Record the link in `README.md`, status `waiting-answers`. Report and stop.
 5. **Answers, round `<n>`.** Collect the answers: from the Artifact database (`ArtifactData` `list` of `answers`), from text the user pastes or files they point to, or from a meeting's minutes (`/discovery <minutes.md>`). Write them verbatim to `rounds/<n>/answers.raw.md`, one section per person, never edited after. A late respondent on a round already analysed reopens it: append their section to that round's `answers.raw.md`, then rewrite its `analysis.md`. Read `templates/analysis.md` and write `rounds/<n>/analysis.md`: what changed in the understanding, each hypothesis confirmed or rejected, consensus that becomes a rule, disagreements and gaps that become open points, new requirements nobody asked for, what the code says about the answers. An answer that contradicts a rule settled in another feature → ask (keep the rule, change it, or ask again).
-6. **Business rules, next version.** Read `templates/business-rules.md` and write `business-rules/v<n>.md`, `<n>` = the last version + 1 (a reopened round makes a new version too, and so does routing that moves a rule to the feature that owns it; earlier versions stay as they are). Every rule cites its source (meeting time, question and person, or code path). A rule that depends on an open point is written with the proposed answer and marked `(P-n)`. Update `README.md`: status `settled` when no `P-n` is open, else `open-points`.
-7. **Report** (below). Steps 4 to 6 repeat once per round until nothing is open.
+6. **Business rules, next version.** Read `templates/business-rules.md` and write `business-rules/v<n>.md`, `<n>` = the last version + 1 (a reopened round makes a new version too, and so does routing that moves a rule to the feature that owns it; earlier versions stay as they are). Every rule cites its source (meeting time, question and person, code path, or `RD-n` when it comes from the domain). A rule that depends on an open point is written with the proposed answer and marked `(P-n)`. Update `README.md`: status `settled` when no `P-n` is open, else `open-points`.
+7. **Domain.** List what this round learned about the area, not about this product: a research finding with a primary source, an answer from product that holds for any product in the area, a term. None → skip. Otherwise show the list and ask which to add (all, recommended when each has a source; some; none). Read `templates/domain.md`; create `docs/domain/` when missing (ask once who owns it), add each as the next `RD-n` or a row in `terms.md`, and set the last review date. Never rewrite an existing `RD-n` here: a contradiction goes to the Heads up for the domain owner.
+8. **Report** (below). Steps 4 to 7 repeat once per round until nothing is open.
 
 ## Report
 
@@ -79,7 +81,7 @@ Every step that writes a file adds its row to the `Files` table in `README.md` a
 
 **<one line: e.g. business rules v1 written: 24 rules, 3 open points>.** Files in docs/features/<slug>/.
 Next: <by status: waiting-answers → share <link> with <names>, then /discovery <slug> | open-points → a meeting on P-1..P-n then /discovery <minutes.md>, or /discovery <slug> for a questionnaire round | settled → /design <slug>, then /architect <slug>>
-Heads up: <only when there is one: a rule contradicts another feature, someone did not answer, meeting topics still pending → /discovery <minutes.md>, a feature with no row in an existing `docs/scope.md` → /scope <slug> to enroll it>
+Heads up: <only when there is one: a rule contradicts another feature or a domain rule (RD-n), someone did not answer, meeting topics still pending → /discovery <minutes.md>, a feature with no row in an existing `docs/scope.md` → /scope <slug> to enroll it>
 ```
 
 ## Reference files
@@ -94,3 +96,4 @@ Heads up: <only when there is one: a rule contradicts another feature, someone d
 - `templates/questionnaire.html`: read when turning a questionnaire into its Artifact page.
 - `templates/analysis.md`: read when analysing answers.
 - `templates/business-rules.md`: read when writing a business rules version.
+- `templates/domain.md`: read when adding to `docs/domain/`.

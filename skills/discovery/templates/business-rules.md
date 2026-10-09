@@ -2,7 +2,7 @@
 
 The settled business rules for this round. What `/design`, `/architect`, and `/scope` read. Rules say what must be true, never how it is built: no tables, endpoints, tasks, or delivery phases.
 
-Numbering: `RN-n` and `P-n` keep their numbers across versions. A rule that changes keeps its number with the new text; a dropped one stays as `RN-n dropped (<why>, v<n>)`. Rules from another feature are cited with its slug (`<feature> RN-n`), never copied as this feature's rules; when that feature has no rules yet, list it in section 8 as a dependency. A rule only partly owned by another feature keeps its number and is rewritten to keep only this feature's part (e.g. "the closing shows which calculation is pinned"; pinning itself belongs to `pin-calculation`).
+Numbering: `RN-n` and `P-n` keep their numbers across versions. A rule that changes keeps its number with the new text; a dropped one stays as `RN-n dropped (<why>, v<n>)`. A rule that comes from the domain cites it as its source (`[RD-n]`), and the domain rule itself is never copied. Rules from another feature are cited with its slug (`<feature> RN-n`), never copied as this feature's rules; when that feature has no rules yet, list it in section 8 as a dependency. A rule only partly owned by another feature keeps its number and is rewritten to keep only this feature's part (e.g. "the closing shows which calculation is pinned"; pinning itself belongs to `pin-calculation`).
 
 ```markdown
 # <Feature> · business rules v<n>

@@ -9,8 +9,9 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 | [codegraph-default.md](codegraph-default.md) | decision |
 | [force-ponytail.md](force-ponytail.md) | decision |
 | [handoff-table-penpot.md](handoff-table-penpot.md) | fix |
-| [project-folder-layout.md](project-folder-layout.md) | fix |
 | [design-later-ideas.md](design-later-ideas.md) | decision |
 | [not-ported-jsmastery.md](not-ported-jsmastery.md) | decision |
+| [repo-of-repos-paths.md](repo-of-repos-paths.md) | fix |
+| [rag-vault.md](rag-vault.md) | study |
 
 Items marked *Proposal* are suggestions, not decisions.

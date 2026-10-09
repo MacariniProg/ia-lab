@@ -12,7 +12,7 @@ Gathered on 2026-10-02. "(not verified)" = no primary source. Fictional example:
 
 - Personal data only for the stated purpose, with restricted access (not verified)
 
-**So what:** each pet owner sees only their own appointments; the front desk sees all of them.
+**So what:** each pet owner sees only their own appointments; the front desk sees all of them. Confirmed against the law and moved to the domain as RD-1 and RD-2 ([docs/domain/rules.md](../../domain/rules.md)).
 
 ## Not found
 

@@ -1,8 +1,40 @@
 # AI Lab
 
-A study repo for building a reusable AI development ecosystem: a set of [Agent Skills](https://agentskills.io) that take a feature from a recorded meeting with the product team all the way to shipped, tested, documented code.
+The standard every project at the company follows: one folder layout, the documents each stage of the work leaves behind, and the [Agent Skills](https://agentskills.io) that write them, from a recorded meeting with the product team all the way to shipped, tested, documented code.
 
-The Next.js app is intentionally minimal (a single page). The focus is the skills around it, not the app.
+This repo is where the standard is defined and tried. A project adopts it by following the layout below and installing the skills. Here, `docs/` plays the project repo's part and the Next.js app at the root stands in for a code repo (a single placeholder page); the standard is the layout and the skills, not the app.
+
+## What every project looks like
+
+A project is one **project repo** that holds everything about the product except code: business rules, features, meetings, domain, scope, design, and the AI layer (skills, agents, `AGENTS.md`). The **code repos** (one per app: web, api, mobile, …) are cloned inside it, each its own git repo, and the project repo ignores them in its `.gitignore`. The shape is drawn from two existing company projects; they adopt this standard later, as it settles.
+
+```
+<project>/                               project repo (git): the product, no app code
+├── .gitignore                           lists <project>-web/ and <project>-api/
+├── AGENTS.md                            the project: which code repos exist, what each owns, Docs language (audit)
+├── .claude/skills/                      the skills from this repo
+├── docs/
+│   ├── domain/                          the area the product works in: rules (RD-n) and terms true for any product there (discovery)
+│   ├── meetings/<YYYY-MM-DD>-<topic>/   transcript and minutes (transcribe; routing section of minutes.md: discovery)
+│   ├── meetings/glossary.md             words the transcription gets wrong (transcribe)
+│   ├── scope.md                         one row per feature, naming the code repos it touches (scope)
+│   ├── design/                          the design system: README.md, components.md (penpot setup)
+│   ├── features/<slug>/                 business rules versions (discovery), screens.md (design), specs/ (architect), verify.md (check)
+│   ├── reviews/                         check review
+│   ├── releases/                        document
+│   └── postmortems/                     document
+├── <project>-web/                       code repo (its own git)
+│   ├── AGENTS.md                        its stack, commands, conventions (audit)
+│   ├── CHANGELOG.md                     what shipped in this repo (document)
+│   └── test-preferences.json            its test framework (test)
+└── <project>-api/                       code repo (its own git), same files
+```
+
+Why this shape: a feature usually touches more than one app, so its rules, screens, and spec live once, above the code, and every code repo reads the same source. The code repos stay plain repos that deploy on their own. Skills run from the project repo and resolve the git root per folder, so one command can work across `<project>-web/` and `<project>-api/`.
+
+A project only has the folders its work produced so far. A product with a single app keeps the same shape with one code repo inside. A cross cutting decision (for example how files are stored) becomes a feature of its own, so its rules and spec have one home. `scope.md` splits into `docs/scope/index.md` plus one file per area only when it outgrows a scan.
+
+**Domain versus feature.** `docs/domain/` holds what is true of the area whatever the software does: regulation, industry practice, how the business works, its vocabulary. Domain rules are `RD-n` (Regra de Domínio). A feature's business rules (`RN-n`) say what this product does and cite the `RD-n` they come from, so a change in a law leads to every rule and acceptance criterion it touches.
 
 ## How it works
 
@@ -14,7 +46,7 @@ recording ─▶ /transcribe ─▶ /discovery ─▶ /design ─▶ /architect 
                                  └────────────┘  screen validation meeting with product
 ```
 
-- **Product side:** `/transcribe` turns a meeting into a transcript and minutes; `/discovery` turns the minutes into versioned business rules (`RN-n`, Regra de Negócio) through questionnaires for product, until no open point (`P-n`, Pendência) is left; `/design` turns the rules into screens in Penpot, validated with product.
+- **Product side:** `/transcribe` turns a meeting into a transcript and minutes; `/discovery` turns the minutes into versioned business rules (`RN-n`, Regra de Negócio) through questionnaires for product, until no open point (`P-n`, Pendência) is left, reading `docs/domain/` first and adding to it what it learns about the area; `/design` turns the rules into screens in Penpot, validated with product.
 - **Engineering side:** `/architect` writes a spec whose acceptance criteria (`AC-n`) cite the business rules they prove; `/develop` builds from the spec and the screens; `/check`, `/test`, `/document`, and `/sync` verify, test, write up, and keep the context files current.
 - **Entry point:** `/start` reads every status file, shows where each feature stands, and proposes the next skill. Every skill can also be called directly. `/debug` runs anytime something breaks.
 
@@ -26,7 +58,7 @@ You run only the steps a change needs: a bug goes straight to `/debug`; a purely
 |---|---|---|
 | `start` | Board of every feature and the next command; runs it once you confirm. Read only. | nothing |
 | `transcribe` | Meet video, audio, or WhatsApp voice note → transcript + minutes. | `docs/meetings/<date>-<topic>/` |
-| `discovery` | Meeting or idea → business rules, through questionnaires and answer analysis. Routes each meeting topic to its feature. | `docs/features/<slug>/` |
+| `discovery` | Meeting or idea → business rules, through questionnaires and answer analysis. Routes each meeting topic to its feature. | `docs/features/<slug>/`, `docs/domain/` |
 | `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` |
 | `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` |
 | `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` |
@@ -43,7 +75,7 @@ The first five were written in this repo. The last nine are adapted from [jsmast
 
 ## See it on an example
 
-`docs/` holds **PetVida**, a fictional veterinary clinic (in English), with every file the skills write: a meeting with its routing, a feature (`appointment-booking`) with business rules v1 and v2, screens, and a spec ready to build, plus the scope and the design system doc. Start at [docs/README.md](docs/README.md). Running `/start` in this repo shows the board those files produce.
+`docs/` holds **PetVida**, a fictional veterinary clinic (in English), laid out as a real project would be: the domain rules, a meeting with its routing, a feature (`appointment-booking`) with business rules v1 and v2, screens, and a spec ready to build, plus the scope and the design system doc. Start at [docs/README.md](docs/README.md). Running `/start` in this repo shows the board those files produce.
 
 ## Getting started
 
@@ -52,7 +84,7 @@ Requirements: [Claude Code](https://claude.com/claude-code) (or another Agent Sk
 - `transcribe`: `ffmpeg`, `whisper-cli` ([whisper.cpp](https://github.com/ggml-org/whisper.cpp)) with a model in `WHISPER_MODEL`, and Python 3.
 - `penpot`: the Penpot MCP server with the file open in a browser tab, and `PENPOT_TOKEN` for the REST API (`npm install` in `skills/penpot/scripts/` on first use). Details in `skills/penpot/references/connection.md`.
 
-Use the skills here:
+Try the skills on the example here:
 
 ```bash
 git clone https://github.com/MacariniProg/ia-lab.git
@@ -62,7 +94,7 @@ claude          # skills load from .claude/skills/
 
 Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
 
-Use them in another project: copy the `skills/<name>/` folders you want into that project's `.claude/skills/` (or `.agents/skills/` for other agents). Each skill works on its own. How projects install and update them is still open (see `improvements/`).
+Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md) and [existing-project-setup.md](improvements/existing-project-setup.md)).
 
 Run the app (only a placeholder page):
 
@@ -71,7 +103,7 @@ npm install
 npm run dev
 ```
 
-## Repository layout
+## This repo's layout
 
 ```
 skills/<name>/          skill sources: SKILL.md, plus modes/, templates/, references/, scripts/, agents/ when needed
@@ -80,7 +112,7 @@ skills/<name>/          skill sources: SKILL.md, plus modes/, templates/, refere
 scripts/                check-house-rules.sh: fails when the shared rules block drifts between skills;
                         analyze-token-usage.mjs (`npm run tokens`): where a Claude Code session spent its tokens
 improvements/           decisions and fixes still owed, one file each
-docs/                   the PetVida example
+docs/                   the PetVida example, in the layout every project follows
 app/                    minimal Next.js app
 ```
 
@@ -100,11 +132,11 @@ Work in progress. `transcribe`, `discovery`, and `start` are tested on real meet
 
 ## Rules
 
-- Start minimal. Only add something when studying it.
-- Every new piece (skill, agent, feature) must have a clear learning purpose.
+- Start minimal. Add a piece (skill, agent, folder, convention) only when a real project needs it, and write down why.
+- A change to the standard changes every project that follows it: it goes through `improvements/` first, then into the skill and this README.
 - Everything in this repo is in English: code, comments, commits, skill sources, `improvements/`, and the example documents (`Docs language: English` in `CLAUDE.md`).
 
-## Also studying (not in this repo)
+## Tried locally (not part of the standard)
 
 Claude Code mods tested locally, as references for hooks and UI:
 
@@ -112,7 +144,7 @@ Claude Code mods tested locally, as references for hooks and UI:
 - [hellosverre/claude-skins](https://github.com/hellosverre/claude-skins): themed transcript skins (`ui.render` hooks), with a local patch showing context tokens and session cost.
 - [data-goblin/claude-code-filetree](https://github.com/data-goblin/claude-code-filetree): IDE style file tree with read, write, and commit highlights, with a local patch that inserts `@path` at the prompt.
 - [karanb192/cache-tax](https://github.com/karanb192/cache-tax): keeps the prompt cache warm during breaks and warns before a costly cold send.
-- [anthropics/claude-code-playground `blast-radius`](https://github.com/anthropics/claude-code-playground/tree/main/claude-code/mods/blast-radius): holds risky Bash commands and shows what they would change before running.
+- `reply-style` (written locally, no repo): shows Claude's replies behind an orange bar, with a Copy button that copies only the reply text.
 - [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail): "lazy senior developer" rules injected into every session and subagent.
 
 ## Credits and license
