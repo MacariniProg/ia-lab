@@ -1,15 +1,101 @@
 # AI Lab
 
-AI study project. Intentionally minimal Next.js base: the focus isn't the app, it's the AI ecosystem built around it.
+A study repo for building a reusable AI development ecosystem: a set of [Agent Skills](https://agentskills.io) that take a feature from a recorded meeting with the product team all the way to shipped, tested, documented code.
 
-## Goal
+The Next.js app is intentionally minimal (a single page). The focus is the skills around it, not the app.
 
-Learn by doing, adding things gradually:
+## How it works
 
-- **Skills** (`.claude/skills/`): reusable instructions Claude loads on demand
-- **Agents** (`.claude/agents/`): subagents with their own role, tools, and prompt
-- **Hooks, commands, MCP**: as I study them
-- **AI features in the app**: chat, tool calling, etc., when it makes sense
+Each skill does one stage of the work and writes its result to a file in `docs/`. The next skill reads that file. Nothing important lives only in the chat, so you can stop at any step, clear the session, and pick up later.
+
+```
+recording ─▶ /transcribe ─▶ /discovery ─▶ /design ─▶ /architect ─▶ /develop ─▶ /check verify ─▶ /test ─▶ /check review ─▶ /document ─▶ /sync
+                                 ▲            │
+                                 └────────────┘  screen validation meeting with product
+```
+
+- **Product side:** `/transcribe` turns a meeting into a transcript and minutes; `/discovery` turns the minutes into versioned business rules (`RN-n`, Regra de Negócio) through questionnaires for product, until no open point (`P-n`, Pendência) is left; `/design` turns the rules into screens in Penpot, validated with product.
+- **Engineering side:** `/architect` writes a spec whose acceptance criteria (`AC-n`) cite the business rules they prove; `/develop` builds from the spec and the screens; `/check`, `/test`, `/document`, and `/sync` verify, test, write up, and keep the context files current.
+- **Entry point:** `/start` reads every status file, shows where each feature stands, and proposes the next skill. Every skill can also be called directly. `/debug` runs anytime something breaks.
+
+You run only the steps a change needs: a bug goes straight to `/debug`; a purely technical decision skips discovery and design and starts at `/architect`.
+
+## Skills
+
+| Skill | What it does | Writes |
+|---|---|---|
+| `start` | Board of every feature and the next command; runs it once you confirm. Read only. | nothing |
+| `transcribe` | Meet video, audio, or WhatsApp voice note → transcript + minutes. | `docs/meetings/<date>-<topic>/` |
+| `discovery` | Meeting or idea → business rules, through questionnaires and answer analysis. Routes each meeting topic to its feature. | `docs/features/<slug>/` |
+| `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` |
+| `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` |
+| `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` |
+| `audit` | Context files every skill reads (stack, commands, conventions). | `AGENTS.md` |
+| `architect` | Load bearing decision → build spec with acceptance criteria and a build plan. | `docs/features/<slug>/specs/` |
+| `develop` | Builds UI and backend from the spec; stops when a decision is owed. | app code |
+| `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` |
+| `test` | Test suite for the changed code, each test tagged with the `AC-n` it covers. | test files |
+| `document` | PR body, changelog, release note, or postmortem from the real diff. | `CHANGELOG.md`, `docs/releases/`, `docs/postmortems/` |
+| `sync` | Brings `AGENTS.md`, the scope, and spec statuses back in line with the code. | those files |
+| `debug` | Root cause loop, minimal fix, regression test. | code fix |
+
+The first five were written in this repo. The last nine are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills): same text, moved into this repo's folder layout and connected to the others.
+
+## See it on an example
+
+`docs/` holds **PetVida**, a fictional veterinary clinic, with every file the skills write: a meeting with its routing, a feature (`appointment-booking`) with business rules v1 and v2, screens, and a spec ready to build, plus the scope and the design system doc. Start at [docs/README.md](docs/README.md). Running `/start` in this repo shows the board those files produce.
+
+## Getting started
+
+Requirements: [Claude Code](https://claude.com/claude-code) (or another Agent Skills client) and Node.js. Per skill:
+
+- `transcribe`: `ffmpeg`, `whisper-cli` ([whisper.cpp](https://github.com/ggml-org/whisper.cpp)) with a model in `WHISPER_MODEL`, and Python 3.
+- `penpot`: the Penpot MCP server with the file open in a browser tab, and `PENPOT_TOKEN` for the REST API (`npm install` in `skills/penpot/scripts/` on first use). Details in `skills/penpot/references/connection.md`.
+
+Use the skills here:
+
+```bash
+git clone https://github.com/MacariniProg/ia-lab.git
+cd ia-lab
+claude          # skills load from .claude/skills/
+```
+
+Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
+
+Use them in another project: copy the `skills/<name>/` folders you want into that project's `.claude/skills/` (or `.agents/skills/` for other agents). Each skill works on its own. How projects install and update them is still an open question (see the plan).
+
+Run the app (only a placeholder page):
+
+```bash
+npm install
+npm run dev
+```
+
+## Repository layout
+
+```
+skills/<name>/          skill sources: SKILL.md, plus modes/, templates/, references/, scripts/, agents/ when needed
+.claude/skills/<name>   symlinks to skills/, so Claude Code loads them here
+.claude/agents/         scout and researcher subagents (read only helpers some skills use)
+scripts/                check-house-rules.sh: fails when the shared rules block drifts between skills
+docs/ecosystem.md       the plan: decisions, how skills hand off, test status, open questions
+docs/                   the PetVida example (everything except ecosystem.md)
+app/                    minimal Next.js app
+```
+
+## Conventions
+
+Every `SKILL.md` starts with the same house rules block (`scripts/check-house-rules.sh` checks it):
+
+- Code, comments, commits, skill sources, and `AGENTS.md` are in English. Documents the skills generate follow the `Docs language:` line in the project's `AGENTS.md` or `CLAUDE.md` (`pt-BR` here).
+- Plain words; no dash as punctuation and no hyphenated compounds, except values other skills match on.
+- Every abbreviation spelled out on first use.
+- Every question offers 2 to 4 options with exactly one recommended.
+- State lives in files; git commands run once per git root (works in a repo of repos).
+
+## Status
+
+Work in progress. `transcribe`, `discovery`, and `start` are tested on real meetings; `design` and `penpot` are tested without drawing; the nine adapted skills are not tested yet. Progress, decisions, and open questions are in [docs/ecosystem.md](docs/ecosystem.md).
 
 ## Rules
 
@@ -17,18 +103,19 @@ Learn by doing, adding things gradually:
 - Every new piece (skill, agent, feature) must have a clear learning purpose.
 - Code, comments, commits, skill sources, and this repo's plan (`docs/ecosystem.md`) are in English. Documents the skills generate (`docs/meetings/`, `docs/features/`) follow `Docs language:` in `CLAUDE.md`.
 
-## References
+## Also studying (not in this repo)
 
-- [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills) (MIT, checked at `43b69e4`, 2026-08-07): phase based engineering workflow skills (`scope`, `audit`, `architect`, `develop`, `check`, `test`, `document`, `sync`, `debug`). Adapted into `skills/` on 2026-10-09 (folders moved into this repo's skeleton, connected to `discovery`, `design` and `start`; a `LICENSE` copy in each), plus their `scout` and `researcher` subagents in `.claude/agents/`. See [docs/ecosystem.md](docs/ecosystem.md) for what changed and the open questions.
-- [JohnnyVizz/claude-kit `savvy-progress`](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress) (MIT, checked at `272a877`, 2026-10-09): Claude Code mod (function hooks plugin) with a progress bar above the prompt and a live subagents panel (model, effort, steps, context, estimated cost). Adds MCP (Model Context Protocol) tools `progress` and `step` so an orchestrator and its workers report progress. Reference for hooks and for showing multi agent skill progress. **Testing.**
-- [hellosverre/claude-skins](https://github.com/hellosverre/claude-skins) (MIT, checked at `0975ade`, 2026-10-09): Claude Code mod that redraws the transcript: themed tool rows, diff, table and code cards, a usage band, spinner words. `/skin` switches between seven skins; a `design` tool lets Claude build a new one. Reference for `ui.render` hooks. Installed from a local marketplace at `~/.claude/test-mods` with a patch (`~/.claude/patches/skins-local.patch`) that hides the weekly meter and swaps the band's Compact button for context tokens and session cost (`45.2k/1M tokens · $1.23`, from `$.session.usage()`). **Testing.**
-- [data-goblin/claude-code-filetree](https://github.com/data-goblin/claude-code-filetree) (MIT, checked at `da1da65`, 2026-10-05): Claude Code mod with an IDE style file tree in the right sidebar (needs `/tui fullscreen` and Claude Code 2.1.287+). Git status per file, and highlights for what Claude reads (purple), writes (orange) and commits (green). Passes the selected file to Claude through a `prompt.submit` hook. Reference for panes and activity hooks. Local patch (`~/.claude/patches/filetree-mention.patch`, reapply after updates): alt+click on a row, or `@` with the row focused, inserts `@path` at the prompt cursor via `$.prompt.fill`. **Testing.**
-- [karanb192/cache-tax](https://github.com/karanb192/cache-tax) (MIT, checked at `06cac47`, 2026-10-09): Claude Code mod that keeps the prompt cache warm during breaks (`/keepwarm 90m` sends a tool free `$.model.fork` ping every 50 idle minutes, which costs tokens) and, on a cold send in a context of 50k+ tokens, drops the message once and shows the estimated cache rewrite cost. `/cache-tax` shows the card. Reference for `$.clock`, `$.model.fork` and `prompt.submit` guards. Installed from the `karanb192/claude-code-mods` marketplace. **Testing.**
-- [anthropics/claude-code-playground `blast-radius`](https://github.com/anthropics/claude-code-playground/tree/main/claude-code/mods/blast-radius) (Apache-2.0, checked at `569c528`, 2026-10-09): Claude Code mod that holds a risky Bash command (`rm -rf`, `git reset --hard`, `git clean`, `git push --force`, migrations) and opens a pane listing what it would change, with Proceed and Cancel buttons. Below about 144 columns it draws in the band above the prompt instead, which only one mod can hold (cache-tax also uses it). Reference for holding a `tool.call` and returning `{ deny }`. The marketplace is local only: installed from a sparse clone at `~/.claude/local-marketplaces/claude-code-playground` (update with `git pull` there). **Testing.**
+Claude Code mods tested locally, as references for hooks and UI:
 
-## Run
+- [JohnnyVizz/claude-kit `savvy-progress`](https://github.com/JohnnyVizz/claude-kit/tree/main/plugins/savvy-progress): progress bar and live subagents panel; MCP tools `progress` and `step` for multi agent skills.
+- [hellosverre/claude-skins](https://github.com/hellosverre/claude-skins): themed transcript skins (`ui.render` hooks), with a local patch showing context tokens and session cost.
+- [data-goblin/claude-code-filetree](https://github.com/data-goblin/claude-code-filetree): IDE style file tree with read, write, and commit highlights, with a local patch that inserts `@path` at the prompt.
+- [karanb192/cache-tax](https://github.com/karanb192/cache-tax): keeps the prompt cache warm during breaks and warns before a costly cold send.
+- [anthropics/claude-code-playground `blast-radius`](https://github.com/anthropics/claude-code-playground/tree/main/claude-code/mods/blast-radius): holds risky Bash commands and shows what they would change before running.
+- [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail): "lazy senior developer" rules injected into every session and subagent.
 
-```bash
-npm install
-npm run dev
-```
+## Credits and license
+
+The `scope`, `audit`, `architect`, `develop`, `check`, `test`, `document`, `sync`, and `debug` skills are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills) (commit `43b69e4`) under the MIT license; each of those folders carries a copy of it.
+
+The rest of this repo has no license yet.
