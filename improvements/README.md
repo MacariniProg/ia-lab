@@ -14,5 +14,6 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 | [repo-of-repos-paths.md](repo-of-repos-paths.md) | fix |
 | [rag-vault.md](rag-vault.md) | study |
 | [system-map.md](system-map.md) | decision |
+| [product-layer.md](product-layer.md) | decision |
 
 Items marked *Proposal* are suggestions, not decisions.
