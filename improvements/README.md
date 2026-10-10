@@ -13,5 +13,6 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 | [not-ported-jsmastery.md](not-ported-jsmastery.md) | decision |
 | [repo-of-repos-paths.md](repo-of-repos-paths.md) | fix |
 | [rag-vault.md](rag-vault.md) | study |
+| [system-map.md](system-map.md) | decision |
 
 Items marked *Proposal* are suggestions, not decisions.
