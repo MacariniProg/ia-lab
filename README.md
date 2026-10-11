@@ -12,6 +12,7 @@ A project is one **project repo** that holds everything about the product except
 <project>/                               project repo (git): the product, no app code
 ├── .gitignore                           lists <project>-web/ and <project>-api/
 ├── AGENTS.md                            the project: which code repos exist, what each owns, Docs language (audit)
+├── .mcp.json                            one CodeGraph server per code repo (audit)
 ├── .claude/skills/                      the skills from this repo
 ├── docs/
 │   ├── domain/                          the area the product works in: rules (RD-n) and terms true for any product there (discovery)
@@ -26,11 +27,14 @@ A project is one **project repo** that holds everything about the product except
 ├── <project>-web/                       code repo (its own git)
 │   ├── AGENTS.md                        its stack, commands, conventions (audit)
 │   ├── CHANGELOG.md                     what shipped in this repo (document)
+│   ├── .codegraph/                      its code index, local and ignored by git (audit)
 │   └── test-preferences.json            its test framework (test)
 └── <project>-api/                       code repo (its own git), same files
 ```
 
 Why this shape: a feature usually touches more than one app, so its rules, screens, and spec live once, above the code, and every code repo reads the same source. The code repos stay plain repos that deploy on their own. Skills run from the project repo and resolve the git root per folder, so one command can work across `<project>-web/` and `<project>-api/`.
+
+The same goes for the code index: each code repo keeps its own CodeGraph index, and the project repo's `.mcp.json` starts one server per code repo, so an agent working on the web can also query the api in the same session. The project repo has no index of its own, since git hides the code repos from it.
 
 A project only has the folders its work produced so far. A product with a single app keeps the same shape with one code repo inside. A cross cutting decision (for example how files are stored) becomes a feature of its own, so its rules and spec have one home. `scope.md` splits into `docs/scope/index.md` plus one file per area only when it outgrows a scan.
 
@@ -62,7 +66,7 @@ You run only the steps a change needs: a bug goes straight to `/debug`; a purely
 | `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` |
 | `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` |
 | `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` |
-| `audit` | Context files every skill reads (stack, commands, conventions). | `AGENTS.md` |
+| `audit` | Context files every skill reads (stack, commands, conventions), and a CodeGraph code index per code repo. | `AGENTS.md`, `.mcp.json` |
 | `architect` | Load bearing decision → build spec with acceptance criteria and a build plan. | `docs/features/<slug>/specs/` |
 | `develop` | Builds UI and backend from the spec; stops when a decision is owed. | app code |
 | `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` |
@@ -79,7 +83,7 @@ The first five were written in this repo. The last nine are adapted from [jsmast
 
 ## Getting started
 
-Requirements: [Claude Code](https://claude.com/claude-code) (or another Agent Skills client) and Node.js. Per skill:
+Requirements: [Claude Code](https://claude.com/claude-code) (or another Agent Skills client) and Node.js. Recommended: [CodeGraph](https://www.npmjs.com/package/@colbymchenry/codegraph) (`npm i -g @colbymchenry/codegraph`), a code index the skills explore with when its tools are loaded; without it they fall back to reading files. Per skill:
 
 - `transcribe`: `ffmpeg`, `whisper-cli` ([whisper.cpp](https://github.com/ggml-org/whisper.cpp)) with a model in `WHISPER_MODEL`, and Python 3.
 - `penpot`: the Penpot MCP server with the file open in a browser tab, and `PENPOT_TOKEN` for the REST API (`npm install` in `skills/penpot/scripts/` on first use). Details in `skills/penpot/references/connection.md`.
@@ -94,7 +98,7 @@ claude          # skills load from .claude/skills/
 
 Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
 
-Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md) and [existing-project-setup.md](improvements/existing-project-setup.md)).
+Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. `/audit` (run after the scaffold on a new project, first on an existing one) sets up CodeGraph: it indexes each code repo and adds its server to `.mcp.json`. The index stays on each machine, so after a fresh clone run `/audit` or `codegraph init -i <code repo>`; a code repo added later gets its index the same way. Restart the session after `.mcp.json` changes. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md) and [existing-project-setup.md](improvements/existing-project-setup.md)).
 
 Run the app (only a placeholder page):
 
@@ -112,6 +116,7 @@ skills/<name>/          skill sources: SKILL.md, plus modes/, templates/, refere
 scripts/                check-house-rules.sh: fails when the shared rules block drifts between skills;
                         analyze-token-usage.mjs (`npm run tokens`): where a Claude Code session spent its tokens
 improvements/           decisions and fixes still owed, one file each
+testing/                applied to the skills but not yet tried on a real project, one file per area
 docs/                   the PetVida example, in the layout every project follows
 app/                    minimal Next.js app
 ```
@@ -125,10 +130,11 @@ Every `SKILL.md` starts with the same house rules block (`scripts/check-house-ru
 - Every abbreviation spelled out on first use.
 - Every question offers 2 to 4 options with exactly one recommended.
 - State lives in files; git commands run once per git root (works in a repo of repos).
+- Explore code with CodeGraph when its tools are loaded, else `scout` or Grep.
 
 ## Status
 
-Work in progress. `transcribe`, `discovery`, and `start` are tested on real meetings; `design` and `penpot` are tested without drawing; the nine adapted skills are not tested yet. Decisions and fixes still owed are in [improvements/](improvements/README.md).
+Work in progress. `transcribe`, `discovery`, and `start` are tested on real meetings; `design` and `penpot` are tested without drawing; the nine adapted skills are not tested yet. Decisions and fixes still owed are in [improvements/](improvements/README.md); what was applied but not yet tried is in [testing/](testing/README.md).
 
 ## Rules
 

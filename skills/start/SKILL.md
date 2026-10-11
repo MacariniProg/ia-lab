@@ -14,6 +14,7 @@ argument-hint: [what you are doing today | file | feature slug]
 - **Questions:** 2 to 4 concrete options, exactly one marked recommended with a one line why. Use the agent's option picker when it has one (`AskUserQuestion` on Claude Code), else the same options as plain text.
 - **State lives in files,** never only in the chat. Read a file again right before editing it; edit surgically.
 - **Git per root:** resolve each workspace's git root (`git -C <workspace> rev-parse --show-toplevel`) and run git commands once per root.
+- **Exploring code:** when `codegraph_*` tools are loaded (one CodeGraph server per code repo, listed on the `MCP servers:` line of `AGENTS.md`), use them first and inline (this replaces the `scout` offload a skill describes); Read only the lines you will cite or edit and the files an answer flags as stale. Without them, use a read only `scout` subagent or Grep and Read. A call that says no CodeGraph project is loaded means that code repo has no index on this machine: use the fallback for the session and tell the engineer to run `codegraph init -i <code repo>` (or `/audit`), then restart.
 <!-- HOUSE-RULES:END -->
 
 
@@ -25,7 +26,7 @@ The single entry point. It reads the files every skill keeps current, tells you 
 
 | | Path |
 |---|---|
-| Reads | `docs/features/*/README.md` and `screens.md` (status and updated date); `docs/features/*/specs/` (the `**Status**:` line of each spec; an umbrella: its `index.md`); `docs/meetings/*/minutes.md` (the routing section after `<!-- routing: /discovery -->`, or its absence); `docs/scope.md` (each row's status and its next unticked box); the root `AGENTS.md` / `CLAUDE.md` |
+| Reads | `docs/features/*/README.md` and `screens.md` (status and updated date); `docs/features/*/specs/` (the `**Status**:` line of each spec; an umbrella: its `index.md`); `docs/meetings/*/minutes.md` (the routing section after `<!-- routing: /discovery -->`, or its absence); `docs/scope.md` (each row's status and its next unticked box); the root `AGENTS.md` / `CLAUDE.md`; `.mcp.json` (the `codegraph` servers and the folder each serves) |
 | Writes | nothing |
 
 Never writes a file: the state already lives in the files above, and a copy of it would drift. Every write happens in the skill it runs.
@@ -60,7 +61,7 @@ Acts: reads, builds the board. Asks once: which step to run now, with the option
    | scope row `planned`, no feature folder | planned, not started | its entry command from the scope row | not started |
    | feature folder with `specs/` but no `README.md` | technical feature (no discovery) | its row comes from the spec status above | by status |
 
-   The furthest stage decides the row: a spec over `screens.md` over the feature `README.md` (discovery, then design, then architect). Open points (`P-n`) in a feature whose row is `waiting-validation` → add to its Waiting line that the validation meeting can settle them too. A step that falls outside this table: name it plainly, never guess. Code in the repo and no root `AGENTS.md` → a heads up recommending `/audit`.
+   The furthest stage decides the row: a spec over `screens.md` over the feature `README.md` (discovery, then design, then architect). Open points (`P-n`) in a feature whose row is `waiting-validation` → add to its Waiting line that the validation meeting can settle them too. A step that falls outside this table: name it plainly, never guess. Code in the repo and no root `AGENTS.md` → a heads up recommending `/audit`. A `codegraph` server in `.mcp.json` whose folder (its `--path`, else the root) has no `.codegraph/codegraph.db` → a heads up: that code repo has no index on this machine, run `codegraph init -i <folder>` (or `/audit`), then restart the session.
 2. **Read today's input** and match it to a step:
    - a recording (video or audio) → `/transcribe <file>`;
    - a `minutes.md` or `transcript.md` → its row from step 1;
@@ -85,7 +86,7 @@ The board, before the question in step 3:
 
 **Waiting**: <slug>: <what for, from whom> · …
 **Not started**: <slug> (from <meeting>) · …
-Heads up: <only when there is one: no AGENTS.md, an `Assumed` spec to ratify (`/architect <slug>`), a next skill not installed>
+Heads up: <only when there is one: no AGENTS.md, a code repo with no CodeGraph index (`codegraph init -i <folder>`), an `Assumed` spec to ratify (`/architect <slug>`), a next skill not installed>
 ```
 
 An empty group is left out. Commands of skills not installed carry `(not installed)`.

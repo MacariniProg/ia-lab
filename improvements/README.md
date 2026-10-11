@@ -6,7 +6,6 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 |---|---|
 | [new-project-setup.md](new-project-setup.md) | decision |
 | [existing-project-setup.md](existing-project-setup.md) | decision |
-| [codegraph-default.md](codegraph-default.md) | decision |
 | [force-ponytail.md](force-ponytail.md) | decision |
 | [handoff-table-penpot.md](handoff-table-penpot.md) | fix |
 | [design-later-ideas.md](design-later-ideas.md) | decision |

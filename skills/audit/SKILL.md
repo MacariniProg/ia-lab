@@ -1,7 +1,7 @@
 ---
 name: audit
 allowed-tools: Bash, Read, Grep, Glob, Write, Edit, Agent, AskUserQuestion
-description: "Run /audit on a greenfield project, an existing codebase with missing docs, or one area (/audit src/auth) to bootstrap the project's AI context, the AGENTS.md files every later skill reads. Writes tool agnostic AGENTS.md plus thin CLAUDE.md pointers, adding only what is missing; never overwrites curated content."
+description: "Run /audit on a greenfield project, an existing codebase with missing docs, or one area (/audit src/auth) to bootstrap the project's AI context, the AGENTS.md files every later skill reads. Writes tool agnostic AGENTS.md plus thin CLAUDE.md pointers, adding only what is missing; never overwrites curated content. Sets up a CodeGraph code index per code repo when the CLI is installed."
 argument-hint: [area path]
 ---
 
@@ -14,6 +14,7 @@ argument-hint: [area path]
 - **Questions:** 2 to 4 concrete options, exactly one marked recommended with a one line why. Use the agent's option picker when it has one (`AskUserQuestion` on Claude Code), else the same options as plain text.
 - **State lives in files,** never only in the chat. Read a file again right before editing it; edit surgically.
 - **Git per root:** resolve each workspace's git root (`git -C <workspace> rev-parse --show-toplevel`) and run git commands once per root.
+- **Exploring code:** when `codegraph_*` tools are loaded (one CodeGraph server per code repo, listed on the `MCP servers:` line of `AGENTS.md`), use them first and inline (this replaces the `scout` offload a skill describes); Read only the lines you will cite or edit and the files an answer flags as stale. Without them, use a read only `scout` subagent or Grep and Read. A call that says no CodeGraph project is loaded means that code repo has no index on this machine: use the fallback for the session and tell the engineer to run `codegraph init -i <code repo>` (or `/audit`), then restart.
 <!-- HOUSE-RULES:END -->
 
 
@@ -49,7 +50,7 @@ The `AGENTS.md` files hold the content: create root if missing (Phase 1, 2) and 
 
 ## Portability (any OS, any agent)
 
-- Commands: `git` is the only required CLI, same on every OS. Other shell snippets (file counts, `find`, `[ -f ]`) are POSIX reference, not literal scripts; use your agent's cross platform file tools (search/glob, read, write) to list, count, and check existence.
+- Commands: `git` is the only required CLI, same on every OS; `codegraph` is optional (`modes/codegraph.md` skips itself without it). Other shell snippets (file counts, `find`, `[ -f ]`) are POSIX reference, not literal scripts; use your agent's cross platform file tools (search/glob, read, write) to list, count, and check existence.
 - Bundled files live in this skill's folder: `references/agent-prompt.md`, the phase mode files (`modes/*.md`), and the pattern presets (`references/pattern-*.md`). Resolve the folder to an absolute path. Read the matching phase mode file when routing, then `references/agent-prompt.md` plus the SELECTED pattern preset at write time. Its ALL_CAPS placeholders (PHASE, AREA, ADDITIONAL_STANDARDS, MONOREPO_OR_NO, INSTALLED_SKILLS, DECLINED_TOOLS, and so on) are the inputs you gathered in preflight and the question rounds; apply each as you read.
 - No interactive question support? Ask any multiple choice question as plain text with the same options.
 
@@ -93,7 +94,7 @@ Phase 0 (ambiguous) is handled inline below. For Phases 1 to 4, read only the ma
 - Phase 3 (area scan) → `modes/area.md`
 - Phase 4 (gap fill) → `modes/gapfill.md`
 
-Do not read the other mode files. The greenfield and whole repo modes additionally read `modes/tool-skills.md` for the Agent Skills / MCP sweep (skip it for area and gap fill runs).
+Do not read the other mode files. The greenfield and whole repo modes additionally read `modes/tool-skills.md` for the Agent Skills / MCP sweep (skip it for area and gap fill runs). The greenfield, whole repo, and gap fill modes also read `modes/codegraph.md` to set up the code index (skip it for area runs).
 
 ### Phase 0: Classify (only when `pre-flight` is ambiguous)
 

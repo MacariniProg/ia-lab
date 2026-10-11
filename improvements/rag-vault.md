@@ -70,7 +70,7 @@ What this means for the study:
   - *Split* by heading: each `RD-n` or `RN-n` is a natural piece with a stable id to cite.
   - *Retrieve* with hybrid search: keyword ranking (BM25, Best Matching 25) plus embeddings. Embeddings help when a question uses another word for the same thing, or mixes Portuguese and English.
   - *Store* locally (SQLite with a vector extension), rebuilt by a script from the Markdown, never edited by hand. Expose it as an MCP (Model Context Protocol) server or a command line the skills call, with grep as the fallback when it is not installed.
-- **Overlap with CodeGraph** ([codegraph-default.md](codegraph-default.md)): CodeGraph for code, this index for documents, each with grep as fallback. Project B's AGENTS.md already splits them this way.
+- **Overlap with CodeGraph** ([testing/codegraph.md](../testing/codegraph.md)): CodeGraph for code, this index for documents, each with grep as fallback. Project B's AGENTS.md already splits them this way.
 
 ### Candidate tool: qmd (checked 2026-10-09)
 
@@ -95,7 +95,7 @@ Fit and limits:
 1. **What RAG is here.** How documents are split, embedded, stored, and retrieved; which pieces run locally.
 2. **Moving out.** When a domain is shared by two projects: how a project's `docs/domain/` moves to the company repo, how `RD-n` numbers stay stable, and who owns it there.
 3. **Where it helps.** Candidate skills: `discovery` (past meetings and rules), `architect` and `develop` (specs, conventions), `start` (status across features).
-4. **Overlap.** How this relates to [codegraph-default.md](codegraph-default.md), which indexes code the same way this would index docs.
+4. **Overlap.** How this relates to CodeGraph ([testing/codegraph.md](../testing/codegraph.md)), which indexes code the same way this would index docs.
 
 ## Done when
 
