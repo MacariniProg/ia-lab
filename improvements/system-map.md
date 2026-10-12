@@ -33,7 +33,7 @@ What has no home: a short picture of the code repos together. Which app calls wh
 
 ## Questions
 
-1. **Audit does not write the project `AGENTS.md` yet.** The README says it does ("which code repos exist, what each owns, Docs language"), but `skills/audit` only knows one repo. This ties to [repo-of-repos-paths.md](repo-of-repos-paths.md).
+1. **Audit does not write the project `AGENTS.md` yet.** The README says it does ("which code repos exist, what each owns, Docs language"), but `skills/audit` only knows one repo. This ties to [repo-of-repos.md](repo-of-repos.md).
 2. **Diagram or list.** A small text diagram reads well in the terminal; a list is easier for `/sync` to edit one line of.
 3. **Threshold.** When the section outgrows about 30 lines, does it move to `docs/system.md`, the way `scope.md` splits?
 

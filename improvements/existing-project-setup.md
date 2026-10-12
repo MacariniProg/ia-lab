@@ -6,7 +6,7 @@
 
 - Install works as in [new-project-setup.md](new-project-setup.md); decide both together.
 - `/audit` writes the `AGENTS.md` context files every other skill reads. On an existing project it is the first skill to run, and it should be discussed in detail together with this decision.
-- A project may be a repo of repos (`web/` and `api/` as separate git repos under a root that holds the AI layer). Every skill already resolves the git root per workspace.
+- A project may be a repo of repos (`web/` and `api/` as separate git repos under a root that holds the AI layer). The house rules say git runs per root, but most skill steps still assume one root and one stack; see [repo-of-repos.md](repo-of-repos.md).
 - CodeGraph in the two company projects, to replace when each adopts the standard (target: `/audit` adds one `codegraph-<folder>` server per code repo):
   - **GAIA** rsyncs both code repos into a shadow folder in `$TMPDIR`, serves that copy, makes the agent run `.opencode/bin/codegraph-global-sync.sh` after every code change (`AGENTS.md` rule 12), and commits the 21 MB root database (61 commits, 43 MB pack). Drop the shadow, the sync script and command, rule 12, the `codegraph` skill, and the committed `.codegraph/` (`git rm --cached`). opencode needs the same servers in `opencode.json`.
   - **ATYHA** has a setup that does not run: no `codegraph` server in `.mcp.json` or `opencode.json` while `AGENTS.md` says "CodeGraph first", a near empty snapshot from August 3, no index for `atyha-web`, `stat -c` (Linux only) in the script, and `/home/fefo` paths in `AGENTS.md`.
