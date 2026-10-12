@@ -1,8 +1,8 @@
 ---
 name: sync
-allowed-tools: Bash, Read, Grep, Glob, Write, Edit, Agent
-description: "Run /sync as the last step after a change is complete, around merge, to keep durable knowledge current. Updates root and nested AGENTS.md, reconciles the scope from repo evidence, and flags specs the change made stale. Surgical edits only: it adds lines, and rewrites single lines it owns. Never a whole section, never curated prose."
-argument-hint: [feature slug]
+allowed-tools: Bash, Read, Grep, Glob, Write, Edit, Agent, AskUserQuestion
+description: "Run /sync as the last step after a change is complete, around merge, to keep durable knowledge current. Updates root and nested AGENTS.md, reconciles the scope from repo evidence, and flags specs the change made stale. Surgical edits only: it adds lines, and rewrites single lines it owns. Never a whole section, never curated prose. `/sync route <folder or fact>` moves knowledge written before the standard (a vault, docs outside the layout) to its home."
+argument-hint: [feature slug | route <folder or "fact">]
 ---
 
 <!-- HOUSE-RULES:START -->
@@ -21,6 +21,8 @@ argument-hint: [feature slug]
 ## What this skill does
 
 Closes the loop on a completed change: syncs AGENTS.md files, the scope, and linked spec `**Status**:` lines to what the repo now shows, and flags what it must not edit (stale specs, curated prose). The Boundaries table below is the exact contract.
+
+**Route mode:** `/sync route <file, folder, or "fact">` reads `modes/route.md` and follows it instead of the steps below.
 
 **`references/agent-prompt.md`** is the single source of truth for the maintenance rules; SKILL.md covers only orchestration. The main thread reads it and does the maintenance itself (see Step 3).
 
@@ -43,6 +45,7 @@ Closes the loop on a completed change: syncs AGENTS.md files, the scope, and lin
 | Reconcile the scope, for the **features the diff touches** in `docs/scope.md` only, tick **any** completed sub task from repo **evidence** (code, tests, AGENTS.md), advance status | ✅ corrects | /sync |
 | Add / reorder features or sub tasks in the scope | ❌ leaves alone | /scope |
 | Overwrite or rewrite curated AGENTS.md prose | ❌ flags conflict instead | human |
+| Route mode: write knowledge from a vault or an old docs folder into its home (domain, business rules, specs, scope, `AGENTS.md`), adding only, after the engineer approves the plan | ✅ the one exception to the rows above; the owner keeps the file afterwards | /sync |
 
 The dividing line on creation is **context, not policy**: create only when this change shows you the whole area; defer to /audit when the area predates the change and you've seen only a slice. When unsure, **flag instead of creating**.
 

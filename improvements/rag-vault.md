@@ -62,9 +62,9 @@ What this means for the study:
   | `references/` | the source of each `RD-n`, the feature's `research.md` | `/discovery` |
   | `database/`, counts, migration numbers | kept out: code and git answer them | none |
   | changelog, session notes | `CHANGELOG.md` and git | `/document` |
-  | `systems/`, `flows/` | see [system-map.md](system-map.md) | open |
+  | `systems/`, `flows/` | root `AGENTS.md` `## Code repos`; a feature for each pipeline | `/audit` |
 
-- **No catch all folder.** A folder for "general knowledge" is what turned into a session diary in project B. Saving a fact should route it to its home (domain rule, term, business rule, system map, a convention in `AGENTS.md`). *Proposal:* a mode of `/sync` that takes one fact and does the routing, rather than a new skill.
+- **No catch all folder.** A folder for "general knowledge" is what turned into a session diary in project B. Saving a fact should route it to its home (domain rule, term, business rule, system map, a convention in `AGENTS.md`). Applied: `/sync route` (`skills/sync/modes/route.md`) routes a folder note by note or one fact.
 - **Per project, no RAG yet.** Claude Code itself searches with grep and reads instead of embeddings; small files split by kind, plus an index, are enough at PetVida and project A sizes.
 - **Company domain repo, later:**
   - *Split* by heading: each `RD-n` or `RN-n` is a natural piece with a stable id to cite.

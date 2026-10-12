@@ -23,16 +23,16 @@
 7. **Stack lists are JavaScript only.** Source extensions without `.dart`, `.kt`, `.swift` (`architect/SKILL.md:120`, `scope/modes/plan.md:5`); excluded folders without `.venv`, `.dart_tool`, `Pods`; lockfiles and test runners without pub, `flutter_test`, pytest-django (`test/modes/setup.md`); file classification by Next.js paths (`test/SKILL.md:78`).
 8. **One platform per feature on the product side.** Business rules do not say which app a journey step happens in (`discovery/templates/business-rules.md:27`); design states are web only (`design/references/states.md`); Penpot has one library, one frame size, and one `shell.js` skeleton per project (`penpot/modes/setup.md:6,16`, `modes/draw.md:5`); Penpot scripts take the git top level as the root, so run from inside a code repo they miss `docs/design/` and `.env` (`penpot/scripts/mcp.mjs:17`, `files.mjs:17`).
 
-Already right: the two house rules; `scope/modes/plan-monorepo.md`; `audit/modes/codegraph.md`; `start` reading each `.mcp.json` server's `--path`; `sync` handling non JavaScript manifests (`SKILL.md:84`); `architect` never assuming web.
+Already right: the two house rules; `/audit` preflight, which detects the shape and reads signals inside each code repo (causes 3 and 4 for `/audit` only), and its project `AGENTS.md` with the `## Code repos` list; `scope/modes/plan-monorepo.md`; `audit/modes/codegraph.md`; `start` reading each `.mcp.json` server's `--path`; `sync` handling non JavaScript manifests (`SKILL.md:84`); `architect` never assuming web.
 
 ## Questions
 
 1. **One `/develop` or one per platform.** *Proposal:* one. A platform gets its own reference file only when a real project needs it (mobile: `references/ui-mobile.md` with simulator, native build, permissions, store).
-2. **Where the list of code repos lives.** *Proposal:* the project `AGENTS.md` lists every code repo (the [system-map.md](system-map.md) section), and each scope row names the ones that feature touches. Every skill takes its git roots, search paths, and `AGENTS.md` files from those two places, so causes 1 to 4 get one fix.
+2. **Where the list of code repos lives.** *Decided:* the project `AGENTS.md` lists every code repo in `## Code repos` (applied in `/audit`). Still owed: each scope row names the ones that feature touches. Every skill takes its git roots, search paths, and `AGENTS.md` files from those two places, so causes 1 to 4 get one fix.
 3. **Shared rule or per skill fix.** *Proposal:* extend the house rules block with one line ("run git, Grep, and Glob once per code repo the feature touches, with the code repo as the path; read that repo's `AGENTS.md` for stack and commands"), then fix the steps that contradict it skill by skill.
 4. **A feature across code repos in `/develop`.** One run for every repo, or one run per code repo (`/develop <slug> api`, then `/develop <slug> web`)? *Proposal:* one run per code repo, in the order of the build plan (api contract first). It fits the build flow's "one sub task per run" and works in one git root at a time.
 5. **Git setting.** *Proposal:* one `## Git` block in the project `AGENTS.md` for every code repo, so a feature gets the same branch name in each repo it touches.
-6. **First `/audit` depth per code repo.** *Proposal:* a full scan of each code repo on an existing project (the code is real and `/develop` needs its conventions); a stub from its manifest on a new one.
+6. **First `/audit` depth per code repo.** *Decided and applied:* a full scan of each code repo on an existing project; a stub from its manifest on a new one.
 7. **Screens per app.** *Proposal:* an `App` column in `screens.md`, taking its values from the scope row, and one Penpot library and frame size per app recorded in `docs/design/README.md`.
 
 ## Done when

@@ -93,6 +93,8 @@ What `/sync` does with them: reconcile, one line at a time.
 - Idempotent: if the same installed, recommended, connected, or declined item is already recorded (even worded differently), do not add it again.
 - Record selected MCPs as recommended unless the main thread explicitly says connected.
 
+**Code repos section:** in a repo of repos, if this change added a code repo, a contract between code repos (an API schema, a generated client), or a pipeline that crosses features, and root `AGENTS.md` `## Code repos` lacks it, add that one line surgically. A section that would pass about 30 lines: flag under `CONFLICTS` instead.
+
 **Design system pointer:** if this change added or established a `docs/design/README.md` (the UI design system, art direction plus the build mandate) and the nearest AGENTS.md has no pointer to it, add one surgical line: `` - Design system: build all UI to `docs/design/README.md` (art direction and the maximalist product bar); token values live in CSS. `` Put it in root AGENTS.md for a project wide design system, or the UI area's nested AGENTS.md if the system is area scoped. Idempotent: skip if a pointer to it already exists. Never paste its content into AGENTS.md; it is a pointer, not a copy.
 
 Rules you must not break:

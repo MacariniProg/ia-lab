@@ -72,7 +72,7 @@ You run only the steps a change needs: a bug goes straight to `/debug`; a purely
 | `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` |
 | `test` | Test suite for the changed code, each test tagged with the `AC-n` it covers. | test files |
 | `document` | PR body, changelog, release note, or postmortem from the real diff. | `CHANGELOG.md`, `docs/releases/`, `docs/postmortems/` |
-| `sync` | Brings `AGENTS.md`, the scope, and spec statuses back in line with the code. | those files |
+| `sync` | Brings `AGENTS.md`, the scope, and spec statuses back in line with the code; `route` moves an old vault or docs folder into the layout. | those files |
 | `debug` | Root cause loop, minimal fix, regression test. | code fix |
 
 The first five were written in this repo. The last nine are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills): same text, moved into this repo's folder layout and connected to the others.
@@ -98,7 +98,15 @@ claude          # skills load from .claude/skills/
 
 Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
 
-Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. `/audit` (run after the scaffold on a new project, first on an existing one) sets up CodeGraph: it indexes each code repo and adds its server to `.mcp.json`. The index stays on each machine, so after a fresh clone run `/audit` or `codegraph init -i <code repo>`; a code repo added later gets its index the same way. Restart the session after `.mcp.json` changes. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md) and [existing-project-setup.md](improvements/existing-project-setup.md)).
+Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. `/audit` (run after the scaffold on a new project, first on an existing one) sets up CodeGraph: it indexes each code repo and adds its server to `.mcp.json`. The index stays on each machine, so after a fresh clone run `/audit` or `codegraph init -i <code repo>`; a code repo added later gets its index the same way. Restart the session after `.mcp.json` changes. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md)).
+
+An existing project adopts the standard on a branch of its project repo, and the team hears about it before the merge. The old skills and commands leave in the same change, so two setups never run side by side.
+
+1. **Shape.** A project with code and docs in one repo splits: that repo becomes the code repo and keeps its git history; a new project repo takes the docs out of it and clones the code repo inside.
+2. **Skills.** Install them as above. List every skill and command the project already has and name the skill of the standard that replaces each; remove those with a counterpart, and decide one by one for the rest.
+3. **`/audit`.** Writes the project `AGENTS.md` with its `## Code repos` list and one `AGENTS.md` per code repo from a full scan, sets up CodeGraph (also in `opencode.json` when the project uses opencode), and asks before removing each stale line and each piece of an old CodeGraph setup.
+4. **`/scope`** with no argument enrolls what exists. A feature already built is marked `done` with its code path, without backfilling documents; its `docs/features/<slug>/` is created the first time it changes, with `/discovery` reading the code to write v1.
+5. **`/sync route <folder>`** for the vault and every other docs folder outside the layout: moves each note to its home, checked against the code, and keeps documents from the product team in the language they came in. The old folder and its search command go at the end.
 
 Run the app (only a placeholder page):
 

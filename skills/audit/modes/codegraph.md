@@ -9,6 +9,16 @@ A code repo is a git root that holds source code:
 - **Repo of repos** (the project repo lists child folders with their own `.git` in its `.gitignore`): each such child is a code repo. The project repo itself is not one; it holds docs and the AI layer.
 - **Single repo** (code at the project root): the root is the one code repo.
 
+## Step 1b: Find an old setup
+
+A project may already run CodeGraph another way. Look for what the target (one local index and one server per code repo, kept current by the server's file watcher) replaces:
+
+- **A committed index:** `git -C <root> ls-files .codegraph` is not empty, in the project repo or a code repo. Fix: `git -C <root> rm -r --cached .codegraph` plus a `.codegraph/` line in that root's `.gitignore`. In a code repo the local index stays and Step 3 reuses it; at the project repo root of a repo of repos, also delete the local folder (it indexes no code).
+- **Old servers:** an entry whose name or command holds `codegraph` in `.mcp.json` or `opencode.json` that is not a Step 4 server (another name, a `--path` outside the code repos, such as a copy in `$TMPDIR`). Fix: remove that entry; Step 4 adds the right ones.
+- **Sync scripts and the commands or hooks that call them:** a file in `scripts/`, `bin/`, `.opencode/`, `.claude/commands/`, a hook in `.claude/settings.json`, or a manifest script that builds, copies, or syncs an index by hand. Fix: delete the file and the command or hook that runs it, and the shadow folder it copies into.
+
+Ask before removing each item, one question per item (up to four per panel): `Remove it` (recommended) · `Keep it` · `Show me the context`. Lines in `AGENTS.md` or `CLAUDE.md` that tell the agent to run the old setup are the gap fill's `STALE` entries, asked there; an old `codegraph` skill is replaced through the skills list of an existing project (README, "Existing project"), not here.
+
 ## Step 2: Check the CLI
 
 Run `codegraph --version`. Not found → skip Steps 3 to 5, write `CodeGraph: not installed (npm i -g @colbymchenry/codegraph, then run /audit again)` in the report, and stop here. Never install it yourself: it is a global install on the engineer's machine.
@@ -25,6 +35,8 @@ Edit `.mcp.json` at the project root (create it if missing), adding only the ser
 
 - Repo of repos: one server per code repo, named `codegraph-<folder>`, with `"command": "codegraph", "args": ["serve", "--mcp", "--path", "<folder>"]`.
 - Single repo: one server named `codegraph`, with `"args": ["serve", "--mcp"]`.
+
+When the project uses opencode (`opencode.json` or `.opencode/` at the project root), add the same servers under the `mcp` key of `opencode.json` (create the file if missing), since opencode does not read `.mcp.json`: `"codegraph-<folder>": { "type": "local", "command": ["codegraph", "serve", "--mcp", "--path", "<folder>"] }`. Keep every other key as it is.
 
 On Claude Code, also add each server to `permissions.allow` in `.claude/settings.json` as `mcp__<server name>` (its tools only read the index), so the skills can query it without a prompt per call.
 

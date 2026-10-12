@@ -8,6 +8,7 @@ The main thread does the gap fill itself, following the GAP-FILL phase in `refer
 
 After the scan, handle proposals before applying:
 - Nested docs you created for clearly undocumented areas → already written; list them in the relay.
-- Code index (`modes/codegraph.md`): run its Steps 1 and 2, then offer whatever Steps 3 to 5 would add (indexes, `.gitignore` lines, `.mcp.json` servers, the `MCP servers:` line) as one more proposal in the same ask; run them on `Add them now`.
+- Code index (`modes/codegraph.md`): run its Steps 1, 1b (asks before each removal), and 2, then offer whatever Steps 3 to 5 would add (indexes, `.gitignore` lines, `.mcp.json` and `opencode.json` servers, the `MCP servers:` line) as one more proposal in the same ask; run them on `Add them now`.
 - `ROOT_GAPS` and `PROPOSED_ADDITIONS` to existing files → ask (`Add them now` / `Show me the diff` / `Skip for now`) exactly as in the area scan; apply with `Edit` (verbatim, no paraphrase) on `Add them now`.
+- `STALE` (lines that point at something gone or replaced) → ask before removing each, one question per item (up to four per panel): `Remove it` (recommended) · `Keep it` · `Show me the context`. On `Remove it`, delete that line only with Edit; on `Keep it`, leave it and do not list it again in this run. Curated or not, nothing is removed without its own yes.
 - `CONTRADICTIONS` (docs the code disproves) → surface to the engineer, do not auto fix (these touch possibly curated lines). Relay each as "`<doc>` says *X*, but the code/spec shows *Y*" and let them decide (correct it, or update the code). Never silently overwrite.

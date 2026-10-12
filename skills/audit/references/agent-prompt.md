@@ -72,6 +72,13 @@ MONOREPO_OR_NO
      a nested AGENTS.md with its own stack/commands/conventions; root AGENTS.md keeps
      monorepo wide concerns (workspace tooling, shared conventions) only. -->
 
+## Repo of repos
+
+REPO_OF_REPOS
+<!-- "no", or "yes, code repos: <project>-web, <project>-api, …". If yes: root AGENTS.md is the
+     project repo's (Docs language, ## Code repos, shared rules, agent skills, pointers); each
+     code repo gets its own AGENTS.md at its root with its stack, commands, and conventions. -->
+
 ## Task context
 
 TASK_CONTEXT_OR_NONE
@@ -118,7 +125,10 @@ If `INSTALLED_SKILLS_OR_NONE` is provided, write a `## Agent skills` section (te
 
 Monorepo: keep root to monorepo wide concerns (the workspace tooling, meaning the monorepo's package manager and task runner, shared standards, a `## Context files` section pointing at each workspace's nested doc); per app stack does not go in root.
 
-**Step 2b: Per workspace nested AGENTS.md (monorepo only)**
+**Step 2b: Per workspace or per code repo nested AGENTS.md (monorepo or repo of repos only)**
+
+Repo of repos: write root's `## Code repos` section from what each code repo's manifest and README say it owns, and give each code repo the same treatment as a workspace below (its `AGENTS.md` and `CLAUDE.md` at the code repo root, seeded from its manifest).
+
 
 If `MONOREPO_OR_NO` is `yes`: for each workspace (`apps/*`, `packages/*`), read its manifest. Even with no features built, the scaffold declares the workspace's stack and commands; capture them so `/architect` and `/develop` read them from the workspace's own doc (not root). Write `<workspace>/AGENTS.md` with the nested template (`## Stack` from its manifest, `## Commands` from its scripts, scoped to the workspace, e.g. a filtered dev command like `<pkgmgr> --filter <name> dev`, root `## Rules` inherited by reference), the sibling `<workspace>/CLAUDE.md` pointer, and a pointer under root's `## Context files`. Skip an empty workspace with no manifest.
 
@@ -148,6 +158,8 @@ Stack, runtime, framework; daily commands (install, dev, build, test); conventio
 **Step 4: Create nested AGENTS.md**
 
 Monorepo (`MONOREPO_OR_NO` = yes): don't judge or deep scan. Every workspace (`apps/*`, `packages/*`) gets a light stub `AGENTS.md` at its root (`## Stack` + `## Commands` from its manifest, scoped, e.g. `<pkgmgr> -F <name> …`, plus a one line overview), the sibling `CLAUDE.md` pointer, and a root `## Context files` pointer. Deep conventions come later via `/audit <workspace>`. A doc buried below a workspace root with no root doc: follow the relocation rule the main agent surfaced. Skip the judgment step below.
+
+Repo of repos (`REPO_OF_REPOS` = yes): write root's `## Code repos` section, then scan each code repo fully (never a stub: the code is real) and write its `AGENTS.md` with the nested template plus `## Stack` and `## Commands` of its own, its sibling `CLAUDE.md`, and a root `## Context files` pointer. Inside each code repo, judge nested areas as for a single repo below. For a large code repo, one `scout` per code repo, briefed with that code repo as its path (search from the root skips code repos, since the root `.gitignore` lists them).
 
 Single repo: identify the major areas/modules (e.g. `src/auth`, `src/payments`, `src/api`); judge each. Warrants a nested doc: distinct conventions, not obvious rules, local commands, external integrations, or gotchas a developer must know before touching it. Does not: a simple module with no surprises, or root already covers it (skip; never one per folder). For each warranted area: write `<area>/AGENTS.md` with the nested template, its sibling `<area>/CLAUDE.md` pointer, and one pointer line in root's `## Context files` via Edit:
 ```
@@ -204,16 +216,19 @@ Read the existing root AGENTS.md (provided above; Read it if given as a path) an
 
 With your file tools, list the project tree a few levels deep, skipping vendored/generated dirs (`.git`, `node_modules`, `.next`, `dist`, `build`). Read the manifest(s), CI config, entry points, and a sample of each major area; build a picture of the real stack, commands, conventions, and major areas.
 
-**Step 3: Find four kinds of finding**
+**Step 3: Find these kinds of finding**
 
 - (a) Global facts missing from root: a daily command, stack element, project wide rule, or the build approach (in the scope header but absent from root) that's true but unrecorded. Collect each as a `ROOT_GAPS` line (exact markdown + target section); apply only with the engineer's permission (the gap handling step in `modes/gapfill.md`), never silently, since a root line may be curated.
 - (b) Undocumented areas: a major area with distinct conventions/gotchas and no nested AGENTS.md. Create the nested doc (nested template + sibling CLAUDE.md pointer) and add its root pointer line via Edit (safe to do directly: creating, not overwriting).
 - (c) Stale/incomplete nested docs: an existing nested AGENTS.md missing something now true of its area. Return as `PROPOSED_ADDITIONS`; do NOT edit it yourself.
 - (d) Contradictions: a doc states something the codebase or its governing records disprove (documented test runner or framework isn't the one used; `## Stack` conflicts with the architecture spec; `## Build approach` differs from the scope header; a documented command no longer exists). Worse than a gap: the docs are actively wrong. Collect each as a `CONTRADICTIONS` entry naming the doc, what it says, and what the code/spec/scope actually shows; surface to the human, never fix automatically (the line may be curated).
 
+- (e) Stale lines in root or nested `AGENTS.md` or `CLAUDE.md`: a path that exists on no machine of the project (`/home/<someone>/…`, a plan in a personal folder), a command, script, or skill that is gone, or a rule that drives a setup this run replaces (a sync script to run after every change, "CodeGraph first" with no CodeGraph server declared). Collect each as a `STALE` entry: file, the exact line, why it is stale (what you checked). Removal is asked item by item in `modes/gapfill.md`, never done here.
+- (f) Repo of repos (`REPO_OF_REPOS=yes`): a missing `## Code repos` section in root goes to ROOT_GAPS with its full text from the template; a code repo with no `AGENTS.md` at its root is an undocumented area (b), written from a full scan of that code repo.
+
 Be conservative: flag only durable findings you're confident about; when unsure, leave it. Do not flag implementation detail, TODOs, or anything that churns.
 
-**Step 4: Report** (format at the bottom). Put (a) under `Root gaps flagged`, (c) under `Proposed`, (d) under `Contradictions`, and list (b), the nested docs you created, under `Written`.
+**Step 4: Report** (format at the bottom). Put (a) under `Root gaps flagged`, (c) under `Proposed`, (d) under `Contradictions`, (e) under `Stale`, and list (b), the nested docs you created, under `Written`.
 
 ---
 
@@ -226,6 +241,7 @@ Docs language: <the existing line, else the language the user writes in>
 
 ## Stack
 
+<Repo of repos: one bullet per code repo instead, `- **<folder>**: <language, framework>`; the rest lives in its AGENTS.md.>
 - **Language / Runtime**: <e.g. TypeScript, Node 20>
 - **Framework**: <e.g. Next.js 14, Express>
 - **Key dependencies**: <3 to 5 most important>
@@ -241,7 +257,17 @@ Docs language: <the existing line, else the language the user writes in>
  - **Facade**, UI first shell, then wire the real behavior behind it (prototype led)
  - **Journey**, build the full user path, one phase at a time>
 
+## Code repos
+
+<Repo of repos only; omit the section in a single repo. One line per code repo, then the
+ connections. Under about 30 lines: every session loads this file. /sync edits single lines.>
+- [<folder>/](<folder>/AGENTS.md): <what it owns, one line>
+- Connections: <who calls whom and through what contract (e.g. OpenAPI schema to a generated client); a shared database or queue>
+- Cross cutting: [<mechanism>](docs/features/<slug>/) <one link per mechanism that crosses features, to the feature whose spec owns it; omit while none>
+
 ## Commands
+
+<Repo of repos: omit; each code repo's AGENTS.md has its own.>
 
 ```bash
 # Install
@@ -363,6 +389,7 @@ Heads up (need you):
 - Root gap: <ROOT_GAPS, one line each>   (area / gap fill only)
 - Proposed additions to an existing file, apply? <PROPOSED_ADDITIONS, one line each>
 - Contradiction, docs the code disproves, resolve: <CONTRADICTIONS, one line each>
+- Stale, remove? <STALE, one line each>   (gap fill only)
 ```
 
 Drop any Heads up bullet with no items, and the whole block if there are none.
