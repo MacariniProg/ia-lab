@@ -5,4 +5,5 @@ What was applied to the skills but not yet tried on a real project. One file per
 | File | Area |
 |---|---|
 | [codegraph.md](codegraph.md) | CodeGraph code index: setup, fallback, savings |
+| [ponytail.md](ponytail.md) | Ponytail plugin declared by `/audit`, offered on a fresh clone |
 | [existing-project.md](existing-project.md) | Existing project: `/audit` on a repo of repos, stale setup, `/sync route` (GAIA pilot) |

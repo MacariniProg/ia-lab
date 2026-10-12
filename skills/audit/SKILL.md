@@ -1,7 +1,7 @@
 ---
 name: audit
 allowed-tools: Bash, Read, Grep, Glob, Write, Edit, Agent, AskUserQuestion
-description: "Run /audit on a greenfield project, an existing codebase with missing docs, or one area (/audit src/auth) to bootstrap the project's AI context, the AGENTS.md files every later skill reads. Writes tool agnostic AGENTS.md plus thin CLAUDE.md pointers, adding only what is missing; never overwrites curated content. Sets up a CodeGraph code index per code repo when the CLI is installed."
+description: "Run /audit on a greenfield project, an existing codebase with missing docs, or one area (/audit src/auth) to bootstrap the project's AI context, the AGENTS.md files every later skill reads. Writes tool agnostic AGENTS.md plus thin CLAUDE.md pointers, adding only what is missing; never overwrites curated content. Sets up a CodeGraph code index per code repo when the CLI is installed, and declares the Ponytail plugin in .claude/settings.json."
 argument-hint: [area path]
 ---
 
@@ -97,7 +97,16 @@ Phase 0 (ambiguous) is handled inline below. For Phases 1 to 4, read only the ma
 - Phase 3 (area scan) → `modes/area.md`
 - Phase 4 (gap fill) → `modes/gapfill.md`
 
-Do not read the other mode files. The greenfield and whole repo modes additionally read `modes/tool-skills.md` for the Agent Skills / MCP sweep (skip it for area and gap fill runs). The greenfield, whole repo, and gap fill modes also read `modes/codegraph.md` to set up the code index (skip it for area runs).
+Do not read the other mode files. The greenfield and whole repo modes additionally read `modes/tool-skills.md` for the Agent Skills / MCP sweep (skip it for area and gap fill runs). The greenfield, whole repo, and gap fill modes also read `modes/codegraph.md` to set up the code index, and declare the Ponytail plugin (below); skip both for area runs.
+
+### Ponytail plugin
+
+Every project runs Claude Code with [Ponytail](https://github.com/DietrichGebert/ponytail) ("smallest complete change" rules, injected into every session and subagent), installed and on by default. Make sure the project root `.claude/settings.json` (create it if missing) has both keys below, adding only what is missing and keeping every other key as it is. Claude Code then offers to install the plugin to anyone who opens the project. In gap fill, offer it in the same ask as the code index additions. Nothing goes into `AGENTS.md` or the skills: other agents do without it.
+
+```json
+"extraKnownMarketplaces": { "ponytail": { "source": { "source": "github", "repo": "DietrichGebert/ponytail" } } },
+"enabledPlugins": { "ponytail@ponytail": true }
+```
 
 ### Phase 0: Classify (only when `pre-flight` is ambiguous)
 

@@ -13,6 +13,7 @@ A project is one **project repo** that holds everything about the product except
 ├── .gitignore                           lists <project>-web/ and <project>-api/
 ├── AGENTS.md                            the project: which code repos exist, what each owns, Docs language (audit)
 ├── .mcp.json                            one CodeGraph server per code repo (audit)
+├── .claude/settings.json                the Ponytail plugin, CodeGraph permissions (audit)
 ├── .claude/skills/                      the skills from this repo
 ├── docs/
 │   ├── domain/                          the area the product works in: rules (RD-n) and terms true for any product there (discovery)
@@ -66,7 +67,7 @@ You run only the steps a change needs: a bug goes straight to `/debug`; a purely
 | `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` |
 | `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` |
 | `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` |
-| `audit` | Context files every skill reads (stack, commands, conventions), and a CodeGraph code index per code repo. | `AGENTS.md`, `.mcp.json` |
+| `audit` | Context files every skill reads (stack, commands, conventions), a CodeGraph code index per code repo, and the Ponytail plugin. | `AGENTS.md`, `.mcp.json`, `.claude/settings.json` |
 | `architect` | Load bearing decision → build spec with acceptance criteria and a build plan. | `docs/features/<slug>/specs/` |
 | `develop` | Builds UI and backend from the spec; stops when a decision is owed. | app code |
 | `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` |
@@ -98,7 +99,7 @@ claude          # skills load from .claude/skills/
 
 Then type `/start`, or call a skill directly (`/discovery <minutes.md>`, `/architect <slug>`, …).
 
-Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. `/audit` (run after the scaffold on a new project, first on an existing one) sets up CodeGraph: it indexes each code repo and adds its server to `.mcp.json`. The index stays on each machine, so after a fresh clone run `/audit` or `codegraph init -i <code repo>`; a code repo added later gets its index the same way. Restart the session after `.mcp.json` changes. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md)).
+Apply the standard to a project: create the project repo, clone each code repo inside it and list it in `.gitignore`, copy the `skills/<name>/` folders into the project repo's `.claude/skills/` (or `.agents/skills/` for other agents), and let the skills create the `docs/` folders as the work reaches them. Each skill works on its own. `/audit` (run after the scaffold on a new project, first on an existing one) sets up CodeGraph: it indexes each code repo and adds its server to `.mcp.json`. The index stays on each machine, so after a fresh clone run `/audit` or `codegraph init -i <code repo>`; a code repo added later gets its index the same way. Restart the session after `.mcp.json` changes. `/audit` also declares the [Ponytail](https://github.com/DietrichGebert/ponytail) plugin in `.claude/settings.json`, so Claude Code offers to install it to anyone who opens the project. How projects install and update the skills is still open (see [new-project-setup.md](improvements/new-project-setup.md)).
 
 An existing project adopts the standard on a branch of its project repo, and the team hears about it before the merge. The old skills and commands leave in the same change, so two setups never run side by side.
 
@@ -159,7 +160,6 @@ Claude Code mods tested locally, as references for hooks and UI:
 - [data-goblin/claude-code-filetree](https://github.com/data-goblin/claude-code-filetree): IDE style file tree with read, write, and commit highlights, with a local patch that inserts `@path` at the prompt.
 - [karanb192/cache-tax](https://github.com/karanb192/cache-tax): keeps the prompt cache warm during breaks and warns before a costly cold send.
 - `reply-style` (written locally, no repo): shows Claude's replies behind an orange bar, with a Copy button that copies only the reply text.
-- [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail): "lazy senior developer" rules injected into every session and subagent.
 
 ## Credits and license
 
