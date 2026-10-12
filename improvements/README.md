@@ -5,7 +5,6 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 | File | Kind |
 |---|---|
 | [new-project-setup.md](new-project-setup.md) | decision |
-| [handoff-table-penpot.md](handoff-table-penpot.md) | fix |
 | [design-later-ideas.md](design-later-ideas.md) | decision |
 | [not-ported-jsmastery.md](not-ported-jsmastery.md) | decision |
 | [repo-of-repos.md](repo-of-repos.md) | decision and fix |

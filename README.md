@@ -59,22 +59,22 @@ You run only the steps a change needs: a bug goes straight to `/debug`; a purely
 
 ## Skills
 
-| Skill | What it does | Writes |
-|---|---|---|
-| `start` | Board of every feature and the next command; runs it once you confirm. Read only. | nothing |
-| `transcribe` | Meet video, audio, or WhatsApp voice note → transcript + minutes. | `docs/meetings/<date>-<topic>/` |
-| `discovery` | Meeting or idea → business rules, through questionnaires and answer analysis. Routes each meeting topic to its feature. | `docs/features/<slug>/`, `docs/domain/` |
-| `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` |
-| `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` |
-| `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` |
-| `audit` | Context files every skill reads (stack, commands, conventions), a CodeGraph code index per code repo, and the Ponytail plugin. | `AGENTS.md`, `.mcp.json`, `.claude/settings.json` |
-| `architect` | Load bearing decision → build spec with acceptance criteria and a build plan. | `docs/features/<slug>/specs/` |
-| `develop` | Builds UI and backend from the spec; stops when a decision is owed. | app code |
-| `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` |
-| `test` | Test suite for the changed code, each test tagged with the `AC-n` it covers. | test files |
-| `document` | PR body, changelog, release note, or postmortem from the real diff. | `CHANGELOG.md`, `docs/releases/`, `docs/postmortems/` |
-| `sync` | Brings `AGENTS.md`, the scope, and spec statuses back in line with the code; `route` moves an old vault or docs folder into the layout. | those files |
-| `debug` | Root cause loop, minimal fix, regression test. | code fix |
+| Skill | What it does | Writes | Read by |
+|---|---|---|---|
+| `start` | Board of every feature and the next command; runs it once you confirm. Read only. | nothing | nobody |
+| `transcribe` | Meet video, audio, or WhatsApp voice note → transcript + minutes. | `docs/meetings/<date>-<topic>/` | `discovery`, `design` (screen validation minutes), `start` |
+| `discovery` | Meeting or idea → business rules, through questionnaires and answer analysis. Routes each meeting topic to its feature. | `docs/features/<slug>/`, `docs/domain/` | `design`, `architect`, `develop`, `check verify`, `debug`, `document`, `scope`, `sync`, `start`; `discovery` itself on the next round |
+| `design` | Business rules → screen inventory, drawn in the design tool and validated with product. | `docs/features/<slug>/screens.md` | `architect`, `develop`, `check verify`, `scope`, `start`; the validate frames go to the screen validation meeting |
+| `penpot` | Adapter that drives Penpot (MCP server and REST API); `/penpot setup` documents a project's design system. | `docs/design/` | `design`, `architect`, `develop`, `check verify`, `test`, `scope`; `penpot` itself when drawing |
+| `scope` | Product plan: which features, in what order, how much checking each needs. | `docs/scope.md` | `discovery`, `architect`, `develop`, `check`, `test`, `audit`, `sync`, `start` |
+| `audit` | Context files every skill reads (stack, commands, conventions), a CodeGraph code index per code repo, and the Ponytail plugin. | `AGENTS.md`, `.mcp.json`, `.claude/settings.json` | every skill (`AGENTS.md`); `start` (`.mcp.json`) |
+| `architect` | Load bearing decision → build spec with acceptance criteria and a build plan. | `docs/features/<slug>/specs/` | `develop`, `check`, `test`, `document`, `audit`, `scope`, `sync`, `start` |
+| `develop` | Builds UI and backend from the spec; stops when a decision is owed. | app code | `check`, `test`, `document`, `sync`, `debug` |
+| `check` | `verify` runs the real app against the spec; `review` reads the diff on a different model. | `verify.md`, `docs/reviews/` | `verify.md`: `architect`, `develop`, `test`, `sync`; reviews: `sync` |
+| `test` | Test suite for the changed code, each test tagged with the `AC-n` it covers. | test files, `test-preferences.json` | `check review`, `sync` |
+| `document` | PR body, changelog, release note, or postmortem from the real diff. | `CHANGELOG.md`, `docs/releases/`, `docs/postmortems/` | `sync`; people |
+| `sync` | Brings `AGENTS.md`, the scope, and spec statuses back in line with the code; `route` moves an old vault or docs folder into the layout. | those files | every skill, next run |
+| `debug` | Root cause loop, minimal fix, regression test. | code fix | `test` (regression test) |
 
 The first five were written in this repo. The last nine are adapted from [jsmastery-pro/skills](https://github.com/jsmastery-pro/skills): same text, moved into this repo's folder layout and connected to the others.
 
