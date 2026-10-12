@@ -5,7 +5,6 @@ Decisions and fixes still owed on the skills. One file per item, named after it.
 | File | Kind |
 |---|---|
 | [new-project-setup.md](new-project-setup.md) | decision |
-| [existing-project-setup.md](existing-project-setup.md) | applied; delete after commit, pilot in testing |
 | [force-ponytail.md](force-ponytail.md) | decision |
 | [handoff-table-penpot.md](handoff-table-penpot.md) | fix |
 | [design-later-ideas.md](design-later-ideas.md) | decision |

@@ -1,6 +1,6 @@
 # Existing project
 
-Applied: the README steps for an existing project, `/audit` on a repo of repos (preflight signal, `## Code repos`, one `AGENTS.md` per code repo from a full scan), stale lines and the old CodeGraph setup asked one by one, servers in `opencode.json`, and `/sync route`. The pilot is GAIA, on a branch of its project repo (decisions in git history of `improvements/existing-project-setup.md`).
+Applied: the README steps for an existing project, `/audit` on a repo of repos (preflight signal, `## Code repos`, one `AGENTS.md` per code repo from a full scan), stale lines and the old CodeGraph setup asked one by one, servers in `opencode.json`, and `/sync route`. The pilot is GAIA, on a branch of its project repo (decisions in commit 15ee5a3, `improvements/existing-project-setup.md`).
 
 ## Checks
 
